@@ -23,3 +23,6 @@ A small collection of programs that are implementing several classic crypto rout
 * vigenere.lua - implements the Vigenère chiffre
 * the rest is just for fun
 
+More about that in my Computer Project blog, where I have some of those programs tested with screenshots how they work:
+https://plus.google.com/+HannoBehrens/posts/UM4ox5o53Uz
+
