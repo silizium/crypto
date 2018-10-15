@@ -5,6 +5,6 @@ local alpha="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 local text=io.read("*a")
 local frak_tab=alpha:subst_table(fraktur)
 text=text:substitute(frak_tab)
-frak_tab={ä="𝖆̈", ö="𝖔̈", ü="𝖚̈", Ä="𝕬̈", Ö="𝕺̈", Ü="𝖀̈", ß="𝖅"}
+frak_tab={ä="𝖆̈", ö="𝖔̈", ü="𝖚̈", Ä="𝕬̈", Ö="𝕺̈", Ü="𝖀̈", ß="𝖋𝖟"}
 text=text:gsub("("..ccrypt.Unicode..")", frak_tab)
 io.write(text)
