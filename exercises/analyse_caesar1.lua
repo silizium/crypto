@@ -1,3 +1,4 @@
+#!/usr/bin/env luajit
 require "ccrypt"
 
 text="ES GIBT EIN SCHWERES PROBLEM MIT UNSERER FAHRZEUGKOLONNE. BRAUCHEN DRINGEND EINEN MECHANIKER. UNS GEHT DAS WASSER AUS."
@@ -16,10 +17,12 @@ for i=1,3 do
 	print("Sum", sum[i])
 end
 print(#text)]]
+print(text)
 
 local num=5
-psi, sum, tab=text:psi(num)
+local psi, sum, tab
 for i=1,num do
-	print(i, psi[i], sum[i], #tab[i])
+	psi, sum, tab=text:psi(i)
+	print(i, psi, sum, #tab)
 end
 
