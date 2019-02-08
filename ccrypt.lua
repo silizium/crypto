@@ -106,12 +106,19 @@ function string.utf8tuples(text, chars)
 end
 	
 function string.count_tuples(text, num)
-	num=num or 1
+	if num==nil or type(num)=="number" then num=num or 1 end
 	local cnt={}
 	local sum=0
-	for tpl in text:utf8tuples(num) do
-		cnt[tpl]=cnt[tpl] and cnt[tpl]+1 or 1
-		sum=sum+1
+	if type(num)=="number" then
+		for tpl in text:utf8tuples(num) do
+			cnt[tpl]=cnt[tpl] and cnt[tpl]+1 or 1
+			sum=sum+1
+		end
+	else
+		for tpl in text:gmatch(num) do
+			cnt[tpl]=cnt[tpl] and cnt[tpl]+1 or 1
+			sum=sum+1
+		end
 	end
 	local res={}
 	for k,v in pairs(cnt) do
@@ -122,16 +129,13 @@ function string.count_tuples(text, num)
 end
 
 function string.psi(text, num)
-	num=num or 1
-	local tab, sum, psi={}, {}, {}
-	for i=1,num do
-		tab[i], sum[i]=text:count_tuples(i)
-		psi[i]=0
-		for k,v in pairs(tab[i]) do
-			psi[i]=psi[i]+v[2]^2
-		end
-		psi[i]=psi[i]/sum[i]^2-1/#tab[i]
+	local tab, sum, psi
+	tab, sum=text:count_tuples(num)
+	local psi=0
+	for k,v in pairs(tab) do
+		psi=psi+v[2]^2
 	end
+	psi=psi/sum^2
 	return psi, sum, tab
 end
 
