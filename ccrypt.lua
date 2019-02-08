@@ -124,7 +124,7 @@ function string.count_tuples(text, num)
 	for k,v in pairs(cnt) do
 		res[#res+1]={k,v}
 	end
-	table.sort(res, function(a,b) return a[2]>b[2] end)
+	table.sort(res, function(a,b) return a[2]==b[2] and a[1]<b[1] or a[2]>b[2] end)
 	return res, sum
 end
 
