@@ -1,5 +1,6 @@
 #!/usr/bin/env luajit
 function cesar(c, k)
+	k=k and k or 13
 	if c < string.byte("A") or string.byte("Z") < c then
 		return c-65
 	end
