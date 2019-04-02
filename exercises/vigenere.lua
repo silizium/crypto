@@ -6,7 +6,8 @@ function cesar(c, k)
 	return (c-65+k)%26
 end
 
-function vigenere(text, pass)
+function vigenere(text, pass, decrypt)
+	decrypt=decrypt and -1 or 1
 	text=text:upper()
 	pass=pass:upper()
 	local str=""
@@ -14,10 +15,10 @@ function vigenere(text, pass)
 	for i=1,#text do
 		str=str..string.char(
 			65+cesar(text:byte(i), 
-				cesar(pass:byte(ip), 0)))
+				cesar(pass:byte(ip)*decrypt, 0)))
 		ip=(ip%#pass)+1
 	end
 	return str
 end
 
-print(vigenere(arg[1], arg[2]))
+print(vigenere(arg[1], arg[2], arg[3]))
