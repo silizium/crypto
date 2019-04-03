@@ -14,10 +14,15 @@ function vigenere(text, pass, decrypt)
 	local str=""
 	local ip=1
 	for i=1,#text do
-		str=str..string.char(
-			65+cesar(text:byte(i), 
-				cesar(pass:byte(ip)*decrypt, 0)))
-		ip=(ip%#pass)+1
+		local c=text:byte(i)
+		if string.byte("A")<=c and c<=string.byte("Z") then
+			str=str..string.char(
+				65+cesar(c, 
+					cesar(pass:byte(ip)*decrypt, 0)))
+			ip=(ip%#pass)+1
+		else
+			str=str..string.char(c)
+		end
 	end
 	return str
 end
