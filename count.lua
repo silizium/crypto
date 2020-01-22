@@ -8,4 +8,5 @@ local tab=src:count_tuples(n)
 for k,v in pairs(tab) do
 	io.stderr:write(v[1],"=",v[2],"\t")
 end
+io.stderr:write("\n")
 io.write(src)

@@ -29,6 +29,52 @@ function string.utf8len(str)
 	return select(2, str:gsub(Unicode, ""))
 end
 
+function string.genpat(word, known)
+	known=known or {}
+	local tab,have={},{}
+	local found=0
+	local nok={}
+	for k,v in pairs(known) do
+		nok[#nok+1]=k
+	end
+	nok=table.concat(nok)
+	for c in word:utf8all() do
+		if known[c] then
+			tab[#tab+1]=c
+		elseif not have[c] then
+			found=found+1
+			if found>1 then
+				tab[#tab+1]="([^"
+				tab[#tab+1]=nok
+				for _,v in pairs(have) do
+					if v<10 then
+						tab[#tab+1]="%"
+						tab[#tab+1]=tostring(v)
+					end
+				end
+				tab[#tab+1]="])"
+			else
+				if nok~="" then
+					tab[#tab+1]="([^"
+					tab[#tab+1]=nok
+					tab[#tab+1]="])"
+				else
+					tab[#tab+1]="(.)"
+				end
+			end
+			have[c]=found
+		else
+			if have[c] < 10 then
+				tab[#tab+1]="%"
+				tab[#tab+1]=tostring(have[c])
+			else
+				tab[#tab+1]="."
+			end
+		end
+	end
+	return table.concat(tab)
+end
+
 function string.filter(input, pat, rep)
 	pat = pat or "[%s%p%c]+"
 	rep = rep or ""
