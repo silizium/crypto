@@ -1,6 +1,7 @@
 #!/usr/bin/env luajit
-local t,cnt,num={},0,0
-local function tri2hex()
+local function tri2bin()
+	local t={}
+	local cnt,num=0,0
 	repeat
 		c=tonumber(io.read(1))
 		if not c or cnt>=40 then
@@ -15,10 +16,12 @@ local function tri2hex()
 	until not c
 	return table.concat(t," ")
 end
-local function hex2tri()
+local function bin2tri()
+	local t={}
+	local cnt,num=0,0
 	repeat
-		c=io.read(1):upper():match("[0-9A-F ]")
-		if not c or c==" " then
+		c=io.read(1)
+		if not c or cnt>=4 then
 			cnt=0
 			t[#t+1]=num
 			num=0
@@ -31,7 +34,7 @@ local function hex2tri()
 	return table.concat(t," ")
 end
 if arg[1]~="-d" then
-	print(tri2hex())
+	print(tri2bin())
 else
-	print(hex2tri())
+	print(bin2tri())
 end
