@@ -1,4 +1,5 @@
 #!/usr/bin/env luajit
+require"ccrypt"
 function Encrypt( _msg, _key )    
     local msg = { _msg:upper():byte( 1, -1 ) }
     local key = { _key:upper():byte( 1, -1 ) }    
@@ -33,11 +34,14 @@ function Decrypt( _msg, _key )
 end
  
  
-original = "Beware the Jabberwock, my son! The jaws that bite, the claws that catch!"
-key = "VIGENERECIPHER";
+-- original = "Beware the Jabberwock, my son! The jaws that bite, the claws that catch!"
+local text=io.read("*a"):upper()
+text=text:substitute(("äöü"):subst_table("ÄÖÜ"))
+local enc_key={["ß"]="SZ", ["Ä"]="AE", ["Ö"]="OE", ["Ü"]="UE"}
+text=text:substitute(enc_key)
+local key = arg[1] and arg[1] or "VIGENERECIPHER"
  
-encrypted = Encrypt( original, key )
-decrypted = Decrypt( encrypted, key )
+encrypted = arg[2]=='-d' and Decrypt(text, key) or Encrypt( text, key )
  
-print( encrypted )
-print( decrypted )
+io.write( encrypted )
+-- print( decrypted )

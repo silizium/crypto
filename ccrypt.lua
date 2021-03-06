@@ -111,6 +111,17 @@ function string.shuffle(text)
 	return table.concat(t)
 end
 
+function string.utf8reverse(text)
+	local t={}
+	for c in text:utf8all() do
+		t[#t+1]=c
+	end
+	for i=1,#t/2 do
+		t[i], t[#t+1-i] = t[#t+1-i], t[i]
+	end
+	return table.concat(t)
+end
+
 function string.subst_table(alphabet, cipher, key)
 	alphabet = alphabet or "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	cipher = cipher or alphabet
