@@ -1,35 +1,17 @@
 #!env luajit
 --hill cipher
 require"ccrypt"
-local key,decrypt="GYBNQKURP",false
+local key,decrypt,english="GYBNQKURP",false,false
 for i=1,#arg do
 	if arg[i]=="-d" then
 		decrypt=true
+	elseif arg[i]=="-e" then
+		english=true
 	else
 		key=arg[i]
 	end
 end
 local text=io.read("*a")
-function string:clean()
-	-- wir wandeln erstmal unseren Text in Großbuchstaben
-	self=self:upper()
-	-- auch die Sonderzeichen wandeln
-	local toupper_tab=("äöü"):subst_table("ÄÖÜ")
-	self=self:substitute(toupper_tab)
-	-- und jetzt wandeln wir die Sonderzeichen in ASCII
-	local enc_key={
-		["0"]="NULL",["1"]="EINS",["2"]="ZWEI",["3"]="DREI",["4"]="VIER",
-		["5"]="FUENF",["6"]="SECHS",["7"]="SIEBEN",["8"]="ACHT",["9"]="NEUN",
-		["ß"]="SZ",["Ä"]="AE",["Ö"]="OE",["Ü"]="UE",
-		["."]="X", [","]="X", ["!"]="X", ["?"]="X", [";"]="X", --[" "]="X",
-	}
-	self=self:substitute(enc_key)
-	--[[ Does cause invalid dechiffre but good idea
-		text=text:gsub("C[HK]", "Q")	-- CH und CK wurden als Q ersetzt
-	]]
-	self=self:gsub("[%c%s%p]+", "") -- alles außer normale Zeichen weglöschen
-	return self
-end
 function string:totable()
 	local tab={}
 	for i=1,#self do
@@ -137,8 +119,8 @@ function matrix.cofactor(m, mod)
 	return a
 end
 
-text=text:clean()
-key=key:clean()
+text=text:clean(english)
+key=key:clean(english)
 local tkey=key:totable()
 local mkey=matrix.new(3,3,tkey)
 --print(matrix.print(mkey))

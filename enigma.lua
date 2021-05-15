@@ -1,27 +1,6 @@
 #!/usr/bin/env luajit
 require 'ccrypt'
 
--- cleanup ist nicht Teil der Aufgabe aber so geht's
-function string.clean(text)
-        -- wir wandeln erstmal unseren Text in Großbuchstaben
-        text=text:upper()
-        -- auch die Sonderzeichen wandeln
-        local toupper_tab=("äöü"):subst_table("ÄÖÜ")
-        text=text:substitute(toupper_tab)
-        -- und jetzt wandeln wir die Sonderzeichen in ASCII
-        local enc_key={
-			["0"]="NULL",["1"]="EINS",["2"]="ZWEI",["3"]="DREI",["4"]="VIER",
-			["5"]="FUENF",["6"]="SECHS",["7"]="SIEBEN",["8"]="ACHT",["9"]="NEUN",
-			["ß"]="SZ",["Ä"]="AE",["Ö"]="OE",["Ü"]="UE",
-			["."]="X", [","]="X", ["!"]="X", ["?"]="X", [";"]="X",}
-        text=text:substitute(enc_key)
-		--[[ Does cause invalid dechiffre but good idea
-			text=text:gsub("C[HK]", "Q")	-- CH und CK wurden als Q ersetzt
-		]]
-		text=text:gsub("[%c%s%p]+", "") -- alles außer normale Zeichen weglöschen
-        return text
-end
-
 -- Objektorientierte Lösung
 -- Rad Objekt
 local Rad={}
@@ -230,10 +209,22 @@ end
 
 -- Aufruf der Enigma Routinen
 if arg[1]=="--help" then help() end
-local pass=arg[1] or "AAA,AAA,B,123,1,"
+local key,decrypt,english,verbose="AAA,AAA,B,123,1,",false,false,false
+for i=1,#arg do
+	if arg[i]=="-d" then
+		decrypt=true
+	elseif arg[i]=="-e" then
+		english=true
+	elseif arg[i]=="-v" then
+		verbose=true
+	else
+		key=arg[i]
+	end
+end
+
 local text=io.read("*a")
-text=text:clean()
-local enigma = Enigma.new(pass, arg[2])
+text=text:clean(english)
+local enigma = Enigma.new(key, verbose)
 for i=1,#text do
 	io.write(enigma:crypt(text:sub(i,i)))
 end

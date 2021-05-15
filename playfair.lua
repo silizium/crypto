@@ -5,23 +5,6 @@ local Playfair={}
 Playfair.__index = Playfair
 local floor=math.floor
 
--- cleanup ist nicht Teil der Aufgabe aber so geht's
-function Playfair.clean(self, text)
-        -- wir wandeln erstmal unseren Text in Großbuchstaben
-        text=text:upper()
-        -- auch die Sonderzeichen und J wandeln
-        local toupper_tab=("äöüJ"):subst_table("ÄÖÜI")
-        text=text:substitute(toupper_tab)
-        -- und jetzt wandeln wir die Sonderzeichen in ASCII
-        local enc_key={
-			["0"]="NULL",["1"]="EINS",["2"]="ZWEI",["3"]="DREI",["4"]="VIER",
-			["5"]="FUENF",["6"]="SECHS",["7"]="SIEBEN",["8"]="ACHT",["9"]="NEUN",
-			["ß"]="SZ",["Ä"]="AE",["Ö"]="OE",["Ü"]="UE"}
-        text=text:substitute(enc_key)
-		text=text:gsub("[%c%s%p]+", "") -- alles außer normale Zeichen weglöschen
-        return text
-end
-
 function Playfair.init(self, pass)
 	self.alpha="ABCDEFGHIKLMNOPQRSTUVWXYZ"
 	self.table, self.rtable={},{}	-- table k,v und reverse table v,k
@@ -57,15 +40,15 @@ function Playfair.xy(self, char)
 	return (pos-1)%5+1, floor((pos-1)/5)+1
 end
 
-function Playfair.new(password)
+function Playfair.new(password, english)
 	local self=setmetatable({}, Playfair)
-	password=self:clean(password)
+	password=password:clean(english)
 	self.pass=self:init(password)
 	return self
 end
 
-function Playfair.encode(self, text, decode)
-	text=self:clean(text)
+function Playfair.encode(self, text, decode, english)
+	text=text:clean(english)
 	-- auffüllen auf gerade mit zufälligem Zeichen
 	if #text%2 ~= 0 then
 		math.randomseed(os.time()*os.clock())
@@ -119,10 +102,18 @@ function Playfair.encode(self, text, decode)
 end
 
 -- Aufruf der Playfair Routinen
-local pass=arg[1] or "PLAYFAIR"
-local decode=(arg[2] ~= nil) -- wenn 2tes Argument dekodieren
+local key,decrypt,english="PLAYFAIR",false,false
+for i=1,#arg do
+	if arg[i]=="-d" then
+		decrypt=true
+	elseif arg[i]=="-e" then
+		english=true
+	else
+		key=arg[i]
+	end
+end
 
 local text=io.read("*a")
 
-pf = Playfair.new(pass)
-print(pf:encode(text, decode))
+pf = Playfair.new(key, english)
+print(pf:encode(text, decrypt, english))

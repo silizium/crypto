@@ -147,6 +147,36 @@ function string.substitute(text, sub_table, pattern)
 	pattern = pattern or Unicode
 	return (string.gsub(text, pattern, sub_table))
 end
+function string:clean(english)
+	-- wir wandeln erstmal unseren Text in Großbuchstaben
+	self=self:upper()
+	-- auch die Sonderzeichen wandeln
+	local toupper_tab=("äöü"):subst_table("ÄÖÜ")
+	self=self:substitute(toupper_tab)
+	-- und jetzt wandeln wir die Sonderzeichen in ASCII
+	local enc_key
+	if english then
+		enc_key={
+			["0"]="ZERO",["1"]="ONE",["2"]="TWO",["3"]="THREE",["4"]="FOUR",
+			["5"]="FIVE",["6"]="SIX",["7"]="SEVEN",["8"]="EIGHT",["9"]="NINE",
+			["ß"]="SZ",["Ä"]="AE",["Ö"]="OE",["Ü"]="UE",
+			["."]="X", [","]="X", ["!"]="X", ["?"]="X", [";"]="X", --[" "]="X",
+		}
+	else
+		enc_key={
+			["0"]="NULL",["1"]="EINS",["2"]="ZWEI",["3"]="DREI",["4"]="VIER",
+			["5"]="FUENF",["6"]="SECHS",["7"]="SIEBEN",["8"]="ACHT",["9"]="NEUN",
+			["ß"]="SZ",["Ä"]="AE",["Ö"]="OE",["Ü"]="UE",
+			["."]="X", [","]="X", ["!"]="X", ["?"]="X", [";"]="X", --[" "]="X",
+		}
+	end
+	self=self:substitute(enc_key)
+	--[[ Does cause invalid dechiffre but good idea
+		text=text:gsub("C[HK]", "Q")	-- CH und CK wurden als Q ersetzt
+	]]
+	self=self:gsub("[%c%s%p]+", "") -- alles außer normale Zeichen weglöschen
+	return self
+end
 
 function string.utf8tuples(text, chars)
 	chars=chars or 1
