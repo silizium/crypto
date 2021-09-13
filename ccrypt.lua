@@ -87,6 +87,7 @@ function string.block(text, block, line)
 	local len = 0
 	local output = text:gsub("("..ccrypt.Unicode:rep(block)..")", function(t) 
 		len = len + t:utf8len()+1
+		if line<0 then return t end
 		if len>line then 
 			len=0
 			t = t.."\n"
