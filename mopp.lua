@@ -1,7 +1,42 @@
 #!/usr/bin/env luajit
 require"ccrypt"
 local ffi=require"ffi"
+local p = require "posix"
 local getopt=require"posix.unistd".getopt
+local b = bit32 or require "bit"
+ffi.cdef[[
+	typedef union{
+		struct{
+		unsigned int b0:2;
+		unsigned int b1:2; 
+		unsigned int b2:2; 
+		unsigned int b3:2; 
+		};
+		unsigned char byte;
+	}bchar;
+]]
+
+-- Loopback UDP test, IPV4 and IPV6
+function send_udp(data, server, port)
+	server = server or "255.255.255.255"
+	port = port or 7373
+	local fd = p.socket(p.AF_INET, p.SOCK_DGRAM, 0)
+	--p.bind(fd, { family = p.AF_INET, addr = "::", port = port })
+	--p.sendto(fd, "Test ipv4", { family = p.AF_INET, addr = server, port = port })
+	--p.sendto(fd, "Test ipv6", { family = p.AF_INET6, addr = "::", port = 9999 })
+	--[[for i = 1, 2 do
+		local ok, r = p.recvfrom(fd, 1024)
+		if ok then
+			print(ok, r.addr, r.port)
+		else
+			print(ok, r)
+		end
+	end ]]
+	p.sendto(fd, data, {family=p.AF_INET, addr=server, port=port})
+	p.close(fd)
+end
+
+
 -- ternery code space 0 dot 1 dash 2
 local morse={
 	["A"]="12",		["B"]="2111",	["C"]="2121",	["D"]="211",	
@@ -58,7 +93,7 @@ function string.morse(text)
 		end
 	::iter::
 	end
-	t[#t]="3"
+	--t[#t]="3"
 	return table.concat(t)
 end
 function string.imorse(text)
@@ -74,18 +109,33 @@ function string.imorse(text)
 	end
 	return table.concat(t)
 end
+function make_header(protocol, serial, wpm)
+	local header={}
+	header[#header+1]=tostring(protocol)
+	serial=b.tobit(serial)
+	for i=3,1,-1 do
+		header[#header+1]=string.char(b.band(b.rshift(serial,2*(i-1)),3)+48)
+	end
+	for i=3,1,-1 do
+		header[#header+1]=string.char(b.band(b.rshift(wpm,2*(i-1)),3)+48)
+	end
+	return table.concat(header)
+end
 
-local decode, binary, wpm=false,false,15
-for r, optarg, optind in getopt(arg, "hdbw:") do
+local decode, binary, wpm, server, port=false,false,15,"255.255.255.255",7373
+for r, optarg, optind in getopt(arg, "hdbw:s:p:") do
 	if r == '?' then
 		return print('unrecognized option', arg[optind -1])
 	end
 	last_index = optind
 	if r=='h' then
-		print("-h      print this help text\n"
-			.."-d      decode\n"
-			.."-b      to or from bitstream\n"
-			.."-w      wpm <5-60>")
+		print("-h	print this help text\n"
+			.."-d	decode\n"
+			.."-b	bitstream\n"
+			.."-w	wpm <5-60>\n"
+			.."-s	<server>\n"
+			.."-p	<port>"
+		)
 		os.exit(1)
 	elseif r == 'd' then
 		decode=true
@@ -93,62 +143,42 @@ for r, optarg, optind in getopt(arg, "hdbw:") do
 		binary=true
 	elseif r=="w" then
 		wpm=tonumber(optarg)
+	elseif r=="s" then
+		server=optarg
+	elseif r=="p" then
+		port=tonumber(optarg)
 	end
 end
 local text=io.read"*a":upper():filter("[%c]+")
-local stream={}
 text=text:gsub("[%z\1-\127\194-\244][\128-\191]*",{["ä"]="Ä",["ö"]="Ö",["ü"]="Ü",
 	["è"]="È", ["é"]="É",
 	["à"]="À", ["ç"]="Ç",["ð"]="Ð",["ĝ"]="Ĝ",["ĵ"]="Ĵ",
 	["ñ"]="Ñ", ["ś"]="Ś",["þ"]="Þ",["ź"]="Ź",["ż"]="Ż",
 })
-ffi.cdef[[
-	typedef union{
-		struct{
-			unsigned int serial:6;
-			unsigned int protocol:2; 
-		};
-		unsigned char byte;
-	}header1;
-	typedef union{
-		struct{
-			unsigned int b0:2;
-			unsigned int speed:6; 
-		};
-		unsigned char byte;
-	}header2;
-	typedef union{
-		struct{
-		unsigned int b0:2;
-		unsigned int b1:2; 
-		unsigned int b2:2; 
-		unsigned int b3:2; 
-		};
-		unsigned char byte;
-	}bchar;
-]]
 if decode then
 	text=text:imorse()
 else
 	text=text:morse()
 	if binary then
-		header1=ffi.new("header1")
-		header2=ffi.new("header2")
-		bchar=ffi.new("bchar")
-		header1.protocol=1
-		header1.serial=0
-		stream[#stream+1]=string.char(header1.byte)
-		header2.speed=wpm
-		header2.b0=text:byte(1) or 48-48
-		stream[#stream+1]=string.char(header2.byte)
-		for i=2,#text,4 do
-				bchar.b3=text:byte(i) or 48-48
-				bchar.b2=text:byte(i+1) or 48-48
-				bchar.b1=text:byte(i+2) or 48-48
-				bchar.b0=text:byte(i+3) or 48-48
+		local stream,t={},{}
+		local bchar=ffi.new("bchar")
+		local protocol,serial=1,0
+		local header=make_header(protocol,serial,wpm)
+		text=header..text:gsub("3","3"..header)
+		text=text:sub(1,#text-1).."3"
+		for word in text:gmatch("%d%d%d%d%d%d%d[012]+3") do
+			for i=1,#word,4 do
+				bchar.b3=word:byte(i) or 48-48
+				bchar.b2=word:byte(i+1) or 48-48
+				bchar.b1=word:byte(i+2) or 48-48
+				bchar.b0=word:byte(i+3) or 48-48
 				stream[#stream+1]=string.char(bchar.byte)
+			end
+			t[#t+1]=table.concat(stream)
+			send_udp(t[#t],server,port)
+			stream={}
 		end
-		text=table.concat(stream)
+		text=table.concat(t)
 	end
 end
 io.write(text)
