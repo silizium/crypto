@@ -21,6 +21,8 @@ function send_udp(data, server, port)
 	server = server or "255.255.255.255"
 	port = port or 7373
 	local fd = p.socket(p.AF_INET, p.SOCK_DGRAM, 0)
+	p.setsockopt(fd, p.SOL_SOCKET, p.SO_BROADCAST, 1)
+	--local fd = p.socket(p.AF_INET, p.SO_BROADCAST, 0)
 	--p.bind(fd, { family = p.AF_INET, addr = "::", port = port })
 	--p.sendto(fd, "Test ipv4", { family = p.AF_INET, addr = server, port = port })
 	--p.sendto(fd, "Test ipv6", { family = p.AF_INET6, addr = "::", port = 9999 })
