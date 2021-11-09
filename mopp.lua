@@ -21,12 +21,12 @@ function send_udp(data, server, port)
 	server = server or "255.255.255.255"
 	port = port or 7373
 	local fd = p.socket(p.AF_INET, p.SOCK_DGRAM, 0)
-	p.setsockopt(fd, p.SOL_SOCKET, p.SO_BROADCAST, 1)
-	--local fd = p.socket(p.AF_INET, p.SO_BROADCAST, 0)
-	--p.bind(fd, { family = p.AF_INET, addr = "::", port = port })
-	--p.sendto(fd, "Test ipv4", { family = p.AF_INET, addr = server, port = port })
-	--p.sendto(fd, "Test ipv6", { family = p.AF_INET6, addr = "::", port = 9999 })
-	--[[for i = 1, 2 do
+	if server:match("%d+%.%d+%.%d+.255") then p.setsockopt(fd, p.SOL_SOCKET, p.SO_BROADCAST, 1) end
+	--[[
+	p.bind(fd, { family = p.AF_INET6, addr = "::", port = port })
+	p.sendto(fd, "Test ipv4", { family = p.AF_INET, addr = server, port = port })
+	p.sendto(fd, "Test ipv6", { family = p.AF_INET6, addr = "::", port = 9999 })
+	for i = 1, 2 do
 		local ok, r = p.recvfrom(fd, 1024)
 		if ok then
 			print(ok, r.addr, r.port)
@@ -136,7 +136,7 @@ for r, optarg, optind in getopt(arg, "hdbw:s:p:") do
 			.."-b	bitstream\n"
 			.."-w	wpm <5-60>\n"
 			.."-s	<server>\n"
-			.."-p	<port>"
+			.."-p	<port>\n"
 		)
 		os.exit(1)
 	elseif r == 'd' then
@@ -148,7 +148,7 @@ for r, optarg, optind in getopt(arg, "hdbw:s:p:") do
 	elseif r=="s" then
 		server=optarg
 	elseif r=="p" then
-		port=tonumber(optarg)
+		port=tonumber(optarg) 
 	end
 end
 local text=io.read"*a":upper():filter("[%c]+")
