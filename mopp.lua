@@ -17,11 +17,11 @@ ffi.cdef[[
 ]]
 
 -- Loopback UDP test, IPV4 and IPV6
-function send_udp(data, server, port)
+function send_udp(data, server, port, broadcast)
 	server = server or "255.255.255.255"
 	port = port or 7373
 	local fd = p.socket(p.AF_INET, p.SOCK_DGRAM, 0)
-	if server:match("%d+%.%d+%.%d+.255") then p.setsockopt(fd, p.SOL_SOCKET, p.SO_BROADCAST, 1) end
+	if broadcast then p.setsockopt(fd, p.SOL_SOCKET, p.SO_BROADCAST, 1) end
 	--[[
 	p.bind(fd, { family = p.AF_INET6, addr = "::", port = port })
 	p.sendto(fd, "Test ipv4", { family = p.AF_INET, addr = server, port = port })
@@ -111,47 +111,78 @@ function string.imorse(text)
 	end
 	return table.concat(t)
 end
+--[[ binary header creation for Morserino-32 MOPP
+	2bit protocol version
+	6bit serial number
+	6bit speed 5-60
+]]
 function make_header(protocol, serial, wpm)
-	local header={}
-	header[#header+1]=tostring(protocol)
+	protocol=tostring(protocol)
 	serial=b.tobit(serial)
+	local tmp={}
 	for i=3,1,-1 do
-		header[#header+1]=string.char(b.band(b.rshift(serial,2*(i-1)),3)+48)
+		tmp[#tmp+1]=string.char(b.band(b.rshift(wpm,2*(i-1)),3)+48)
 	end
-	for i=3,1,-1 do
-		header[#header+1]=string.char(b.band(b.rshift(wpm,2*(i-1)),3)+48)
+	wpm=table.concat(tmp)
+	tmp=nil
+	return function()
+		local header={}
+		header[#header+1]=protocol
+		for i=3,1,-1 do
+			header[#header+1]=string.char(b.band(b.rshift(serial,2*(i-1)),3)+48)
+		end
+		header[#header+1]=wpm
+		serial=serial+1
+		return table.concat(header)
 	end
-	return table.concat(header)
 end
 
-local decode, binary, wpm, server, port=false,false,15,"255.255.255.255",7373
-for r, optarg, optind in getopt(arg, "hdbw:s:p:") do
-	if r == '?' then
-		return print('unrecognized option', arg[optind -1])
-	end
-	last_index = optind
-	if r=='h' then
+-- Options
+local 	decode, binary, wpm, server, 			port, broadcast=
+		false,	false,	15,	"255.255.255.255",	7373,	false
+local fopt={
+	["h"]=function(optarg,optind) 
 		print("-h	print this help text\n"
 			.."-d	decode\n"
 			.."-b	bitstream\n"
 			.."-w	wpm <5-60>\n"
 			.."-s	<server>\n"
 			.."-p	<port>\n"
+			.."-B	Broadcast\n"
 		)
 		os.exit(1)
-	elseif r == 'd' then
+	end,
+	["d"]=function(optarg, optind)
 		decode=true
-	elseif r == 'b' then
+	end,
+	["b"]=function(optarg, optind)
 		binary=true
-	elseif r=="w" then
+	end,
+	["w"]=function(optarg, optind)
 		wpm=tonumber(optarg)
-	elseif r=="s" then
+	end,
+	["s"]=function(optarg, optind)
 		server=optarg
-	elseif r=="p" then
+	end,
+	["p"]=function(optarg, optind)
 		port=tonumber(optarg) 
-	end
+	end,
+	["B"]=function(optarg, optind)
+		broadcast=true 
+	end,
+	["?"]=function(optarg, optind)
+		print('unrecognized option', arg[optind -1])
+		return true
+	end,
+	}
+-- quickly process options
+for r, optarg, optind in getopt(arg, "hdbw:s:p:B") do
+	last_index = optind
+	if fopt[r](optarg, optind) then break end
 end
+-- read all text
 local text=io.read"*a":upper():filter("[%c]+")
+-- convert all chars to uppercase
 text=text:gsub("[%z\1-\127\194-\244][\128-\191]*",{["ä"]="Ä",["ö"]="Ö",["ü"]="Ü",
 	["è"]="È", ["é"]="É",
 	["à"]="À", ["ç"]="Ç",["ð"]="Ð",["ĝ"]="Ĝ",["ĵ"]="Ĵ",
@@ -165,8 +196,8 @@ else
 		local stream,t={},{}
 		local bchar=ffi.new("bchar")
 		local protocol,serial=1,0
-		local header=make_header(protocol,serial,wpm)
-		text=header..text:gsub("3","3"..header)
+		local header=make_header(protocol, serial, wpm)
+		text=header()..text:gsub("3",function() return "3"..header() end)
 		text=text:sub(1,#text-1).."3"
 		for word in text:gmatch("%d%d%d%d%d%d%d[012]+3") do
 			for i=1,#word,4 do
@@ -177,7 +208,7 @@ else
 				stream[#stream+1]=string.char(bchar.byte)
 			end
 			t[#t+1]=table.concat(stream)
-			send_udp(t[#t],server,port)
+			send_udp(t[#t],server,port,broadcast)
 			stream={}
 		end
 		text=table.concat(t)
