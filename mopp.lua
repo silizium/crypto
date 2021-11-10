@@ -37,6 +37,27 @@ function send_udp(data, server, port, broadcast)
 	p.sendto(fd, data, {family=p.AF_INET, addr=server, port=port})
 	p.close(fd)
 end
+function listen_udp(server, port, broadcast)
+	server = server or "255.255.255.255"
+	port = port or 7373
+	local fd = p.socket(p.AF_INET, p.SOCK_DGRAM, 0)
+	if broadcast then p.setsockopt(fd, p.SOL_SOCKET, p.SO_BROADCAST, 1) end
+	p.bind(fd, { family = p.AF_INET, addr = server, port = port })
+	--[[
+	p.sendto(fd, "Test ipv4", { family = p.AF_INET, addr = server, port = port })
+	p.sendto(fd, "Test ipv6", { family = p.AF_INET6, addr = "::", port = 9999 })
+	for i = 1, 2 do
+		local ok, r = p.recvfrom(fd, 1024)
+		if ok then
+			print(ok, r.addr, r.port)
+		else
+			print(ok, r)
+		end
+	end ]]
+	--p.sendto(fd, data, {family=p.AF_INET, addr=server, port=port})
+	--p.close(fd)
+	return fd
+end
 
 
 -- ternery code space 0 dot 1 dash 2
@@ -139,7 +160,7 @@ end
 
 -- Options
 local 	decode, binary, wpm, server, 			port, broadcast=
-		false,	false,	15,	"255.255.255.255",	7373,	false
+		false,	false,	15,	"255.255.255.255",	7373,  false	
 local fopt={
 	["h"]=function(optarg,optind) 
 		print("-h	print this help text\n"
@@ -180,17 +201,40 @@ for r, optarg, optind in getopt(arg, "hdbw:s:p:B") do
 	last_index = optind
 	if fopt[r](optarg, optind) then break end
 end
--- read all text
-local text=io.read"*a":upper():filter("[%c]+")
--- convert all chars to uppercase
-text=text:gsub("[%z\1-\127\194-\244][\128-\191]*",{["ä"]="Ä",["ö"]="Ö",["ü"]="Ü",
-	["è"]="È", ["é"]="É",
-	["à"]="À", ["ç"]="Ç",["ð"]="Ð",["ĝ"]="Ĝ",["ĵ"]="Ĵ",
-	["ñ"]="Ñ", ["ś"]="Ś",["þ"]="Þ",["ź"]="Ź",["ż"]="Ż",
-})
 if decode then
-	text=text:imorse()
-else
+	if binary then
+		local fd=listen_udp(server,port,broadcast)
+		repeat
+			local ok, r=p.recv(fd, 1024) -- ok=meg, r.addr, r.port, r.family, r.rec
+			--print(r.addr, r.port, r.family, r.rec)
+			if ok then
+				local t={}
+				for i=1,#ok do
+					local c=b.tobit(ok:byte(i))
+					for j=3,0,-1 do
+						t[#t+1]=string.char(b.band(b.rshift(c,j*2),3)+48)
+					end
+				end
+				t=table.concat(t)
+				t=t:sub(8,-1):imorse()
+				io.stdout:flush()
+				io.stdout:write(t)
+				io.stdout:flush()
+			end
+		until not ok
+		p.close(fd)
+	else
+		text=text:imorse()
+	end
+else -- encoding
+	-- read all text
+	local text=io.read"*a":upper():filter("[%c]+")
+	-- convert all chars to uppercase
+	text=text:gsub("[%z\1-\127\194-\244][\128-\191]*",{["ä"]="Ä",["ö"]="Ö",["ü"]="Ü",
+		["è"]="È", ["é"]="É",
+		["à"]="À", ["ç"]="Ç",["ð"]="Ð",["ĝ"]="Ĝ",["ĵ"]="Ĵ",
+		["ñ"]="Ñ", ["ś"]="Ś",["þ"]="Þ",["ź"]="Ź",["ż"]="Ż",
+	})
 	text=text:morse()
 	if binary then
 		local stream,t={},{}
@@ -213,5 +257,5 @@ else
 		end
 		text=table.concat(t)
 	end
+	io.write(text)
 end
-io.write(text)
