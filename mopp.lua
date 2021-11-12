@@ -216,7 +216,8 @@ if decode then
 					end
 				end
 				t=table.concat(t)
-				t=t:sub(8,-1):imorse()
+				t=t:sub(8,-1)..(t:sub(-2,-1)=="3" or "" and "3")
+				t=t:imorse()
 				io.stdout:flush()
 				io.stdout:write(t)
 				io.stdout:flush()
@@ -228,34 +229,41 @@ if decode then
 	end
 else -- encoding
 	-- read all text
-	local text=io.read"*a":upper():filter("[%c]+")
+	repeat
+		text=io.read"*l"
+		if not text then break end
+		text=text:upper():filter("[%c]+")
 	-- convert all chars to uppercase
-	text=text:gsub("[%z\1-\127\194-\244][\128-\191]*",{["ä"]="Ä",["ö"]="Ö",["ü"]="Ü",
-		["è"]="È", ["é"]="É",
-		["à"]="À", ["ç"]="Ç",["ð"]="Ð",["ĝ"]="Ĝ",["ĵ"]="Ĵ",
-		["ñ"]="Ñ", ["ś"]="Ś",["þ"]="Þ",["ź"]="Ź",["ż"]="Ż",
-	})
-	text=text:morse()
-	if binary then
-		local stream,t={},{}
-		local bchar=ffi.new("bchar")
-		local protocol,serial=1,0
-		local header=make_header(protocol, serial, wpm)
-		text=header()..text:gsub("3",function() return "3"..header() end)
-		text=text:sub(1,#text-1).."3"
-		for word in text:gmatch("%d%d%d%d%d%d%d[012]+3") do
-			for i=1,#word,4 do
-				bchar.b3=word:byte(i) or 48-48
-				bchar.b2=word:byte(i+1) or 48-48
-				bchar.b1=word:byte(i+2) or 48-48
-				bchar.b0=word:byte(i+3) or 48-48
-				stream[#stream+1]=string.char(bchar.byte)
+		text=text:gsub("[%z\1-\127\194-\244][\128-\191]*",{["ä"]="Ä",["ö"]="Ö",["ü"]="Ü",
+			["è"]="È", ["é"]="É",
+			["à"]="À", ["ç"]="Ç",["ð"]="Ð",["ĝ"]="Ĝ",["ĵ"]="Ĵ",
+			["ñ"]="Ñ", ["ś"]="Ś",["þ"]="Þ",["ź"]="Ź",["ż"]="Ż",
+		})
+		text=text:morse()
+		if binary then
+			local stream,t={},{}
+			local bchar=ffi.new("bchar")
+			local protocol,serial=1,0
+			local header=make_header(protocol, serial, wpm)
+			for word in text:gmatch("([^3]+)") do
+				--io.stderr:write(word,"\n")
+				word=word:gsub("[03]$","").."3"
+				--io.stderr:write(word,"\n")
+				word=header()..word
+				for i=1,#word,4 do
+					bchar.b3=word:byte(i) or 48-48
+					bchar.b2=word:byte(i+1) or 48-48
+					bchar.b1=word:byte(i+2) or 48-48
+					bchar.b0=word:byte(i+3) or 48-48
+					stream[#stream+1]=string.char(bchar.byte)
+				end
+				word=table.concat(stream)
+				send_udp(word,server,port,broadcast)
+				stream={}
+				io.write(word)
 			end
-			t[#t+1]=table.concat(stream)
-			send_udp(t[#t],server,port,broadcast)
-			stream={}
+		else
+			io.write(text)
 		end
-		text=table.concat(t)
-	end
-	io.write(text)
+	until false
 end
