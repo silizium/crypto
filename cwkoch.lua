@@ -20,7 +20,7 @@ local fopt={
 	["h"]=function(optarg,optind) 
 		io.stderr:write(
 			string.format(
-			"Percentage Koch generator ©2022 H.Behrens\n"
+			"Percentage Koch generator ©2022 H.Behrens DL7HH\n"
 			.."use : %s\n"
 			.."-h	print this help text\n"
 			.."-a	alphabet (%s)\n"
