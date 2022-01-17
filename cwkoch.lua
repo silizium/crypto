@@ -15,18 +15,22 @@ local getopt = require"posix.unistd".getopt
 local cc = require"ccrypt"
 math.randomseed(os.time()^5*os.clock())
 local alphabet="elv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-+@:"
-local percent,number,koch, block=100,50,100,5
+local percent,number,koch, block=100,50,#alphabet,5
 local fopt={
 	["h"]=function(optarg,optind) 
-		print(string.format("-h	print this help text\n"
+		io.stderr:write(
+			string.format(
+			"Percentage Koch generator ©2022 H.Behrens\n"
+			.."use : %s\n"
+			.."-h	print this help text\n"
 			.."-a	alphabet (%s)\n"
 			.."-k	kochlevel (%d)\n"
 			.."-p	percent <1-100> (%d)\n"
 			.."-n	number (%d)\n"
-			.."-b	block (%d)",
-			alphabet, koch, percent, number,block)
+			.."-b	block (%d)\n",
+			arg[0], alphabet:sub(1,koch), koch, percent, number,block)
 		)
-		os.exit(1)
+		--os.exit(1)
 	end,
 	["a"]=function(optarg, optind)
 		alphabet=optarg
