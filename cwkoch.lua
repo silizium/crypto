@@ -1,4 +1,16 @@
 #!env luajit
+--[[
+	cwkoch is a small koch trainer for cw/telegraphy learning
+	it needs the ccrypt library, the luaposix library and the 
+	cw package under Linux or anything else that will transform 
+	text to morse sound.
+	2022 Hanno Behrens
+	Dependencies:
+	git pull https://github.com/silizium/crypto
+	sudo luarocks install luaposix
+	sudo apt install cw luajit
+	Example: https://photos.app.goo.gl/VqdiwpthPs8d7hnN7
+]]
 local getopt = require"posix.unistd".getopt
 local cc = require"ccrypt"
 math.randomseed(os.time()^5*os.clock())
