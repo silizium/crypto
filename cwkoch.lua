@@ -73,6 +73,6 @@ for i=1,number do
   	t[#t+1]=alphabet:sub(rnd, rnd)
 end
 t=table.concat(t):block(block)
-t=t:gsub("("..("%S+ "):rep(newline)..")","%1\n")
+if newline and newline>0 then t=t:gsub("("..("%S+ "):rep(newline)..")","%1\n") end
 t="vvv[ka]\n"..t.."+\n"
 io.write(t)
