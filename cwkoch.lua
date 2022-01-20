@@ -15,7 +15,7 @@ local getopt = require"posix.unistd".getopt
 local cc = require"ccrypt"
 math.randomseed(os.time()^5*os.clock())
 local alphabet="elv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-+@:"
-local percent,number,koch, block=100,50,#alphabet,5
+local percent,number,koch, block, newline=100,50,#alphabet,5,5
 local fopt={
 	["h"]=function(optarg,optind) 
 		io.stderr:write(
@@ -27,8 +27,8 @@ local fopt={
 			.."-k	kochlevel (%d)\n"
 			.."-p	percent <1-100> (%d)\n"
 			.."-n	number (%d)\n"
-			.."-b	block (%d)\n",
-			arg[0], alphabet:sub(1,koch), koch, percent, number,block)
+			.."-b	block,newline (%d,%d)\n",
+			arg[0], alphabet:sub(1,koch), koch, percent, number,block,newline or 5)
 		)
 		--os.exit(1)
 	end,
@@ -48,7 +48,8 @@ local fopt={
 		number=tonumber(optarg)
 	end,
 	["b"]=function(optarg, optind)
-		block=tonumber(optarg)
+		block,newline=optarg:match("(%d+),*(%d*)")
+		block,newline=tonumber(block),tonumber(newline)
 	end,
 	["?"]=function(optarg, optind)
 		print('unrecognized option', arg[optind -1])
@@ -71,6 +72,7 @@ for i=1,number do
 	rnd=math.random(1,#alphabet)
   	t[#t+1]=alphabet:sub(rnd, rnd)
 end
-t=table.concat(t)
-t="vvv[ka]\n"..t:block(block).."+\n"
+t=table.concat(t):block(block)
+t=t:gsub("("..("%S+ "):rep(newline)..")","%1\n")
+t="vvv[ka]\n"..t.."+\n"
 io.write(t)
