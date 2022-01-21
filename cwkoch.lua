@@ -70,9 +70,9 @@ local rnd
 local t={}
 for i=1,number do
 	rnd=math.random(1,#alphabet)
-  	t[#t+1]=alphabet:sub(rnd, rnd)
+  	t[#t+1]=alphabet:sub(rnd,rnd)
 end
-t=table.concat(t):block(block)
-if newline and newline>0 then t=t:gsub("("..("%S+ "):rep(newline)..")","%1\n") end
+t=table.concat(t):block(block,(newline or 0)*(block or 0))
+--if newline and newline>0 then t=t:gsub("("..("[^ ]+%s+"):rep(newline)..")","%1\n") end
 t="vvv[ka]\n"..t.."+\n"
 io.write(t)
