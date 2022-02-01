@@ -14,7 +14,9 @@
 local getopt = require"posix.unistd".getopt
 local cc = require"ccrypt"
 math.randomseed(os.time()^5*os.clock())
-local alphabet="elv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-+@:"
+--              1         11        21        31        41        51
+local alphabet="elv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-+@:;!_()'\"KVSEO"
+local special={["K"]="[ka]", ["V"]="[ve]", ["S"]="[sk]", ["O"]="[sos]", ["E"]="[eeeeeeee]" }
 local percent,number,koch, block, newline=100,50,#alphabet,5,5
 local fopt={
 	["h"]=function(optarg,optind) 
@@ -62,7 +64,7 @@ for r, optarg, optind in getopt(arg, "a:k:p:n:b:h") do
 	if fopt[r](optarg, optind) then break end
 end
 koch=koch>#alphabet and #alphabet or koch
-alphabet=alphabet:upper():sub(1,koch)
+alphabet=alphabet:sub(1,koch)
 alphabet=alphabet:shuffle()
 alphabet=alphabet:sub(1,#alphabet*percent/100)
 --io.stderr:write(alphabet, " ", koch, " ", percent, " ", number, " ", block, "\n")  -- debug
@@ -73,6 +75,7 @@ for i=1,number do
   	t[#t+1]=alphabet:sub(rnd,rnd)
 end
 t=table.concat(t):block(block,(newline or 0)*(block or 0))
+t=t:gsub(".",special):upper()
 --if newline and newline>0 then t=t:gsub("("..("[^ ]+%s+"):rep(newline)..")","%1\n") end
 t="vvv[ka]\n"..t.."+\n"
 io.write(t)
