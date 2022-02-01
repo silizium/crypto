@@ -14,9 +14,10 @@
 local getopt = require"posix.unistd".getopt
 local cc = require"ccrypt"
 math.randomseed(os.time()^5*os.clock())
---              1         11        21        31        41        51
-local alphabet="elv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-+@:;!_()'\"KVSEO"
-local special={["K"]="[ka]", ["V"]="[ve]", ["S"]="[sk]", ["O"]="[sos]", ["E"]="[eeeeeeee]" }
+--              1         11        21        31        41        51         60
+local alphabet="elv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-+@:;!_()'\"AOUZKVTES"
+local special={["K"]="[ka]", ["V"]="[ve]", ["T"]="[sk]", ["S"]="[sos]", ["E"]="[hh]",
+	["A"]="[aa]", ["O"]="[oe]", ["U"]="[ue]", ["Z"]="[sz]"}
 local percent,number,koch, block, newline=100,50,#alphabet,5,5
 local fopt={
 	["h"]=function(optarg,optind) 
