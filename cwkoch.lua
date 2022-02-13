@@ -44,7 +44,6 @@ local fopt={
 	end,
 	["c"]=function(optarg, optind)
 		choice=tonumber(optarg:match("%d*"))
-		choice=choice>100 and 100 or choice
 		choice=choice<0 and 0 or choice
 		percent=optarg:match("%d*%%") and true or false
 	end,
