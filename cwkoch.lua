@@ -18,7 +18,7 @@ math.randomseed(os.time()^5*os.clock())
 local alphabet="elv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-+@:;!_()'\"AOUZKVTES"
 local special={["K"]="[ka]", ["V"]="[ve]", ["T"]="[sk]", ["S"]="[sos]", ["E"]="[hh]",
 	["A"]="[aa]", ["O"]="[oe]", ["U"]="[ue]", ["Z"]="[sz]"}
-local percent,number,koch, block, newline=100,50,#alphabet,5,5
+local choice,percent,number,koch, block, newline=100,true,50,#alphabet,5,5
 local fopt={
 	["h"]=function(optarg,optind) 
 		io.stderr:write(
@@ -28,10 +28,10 @@ local fopt={
 			.."-h	print this help text\n"
 			.."-a	alphabet (%s)\n"
 			.."-k	kochlevel (%d)\n"
-			.."-p	percent <1-100> (%d)\n"
+			.."-c	choice <num>[%%] (%d%s)\n"
 			.."-n	number (%d)\n"
 			.."-b	block,newline (%d,%d)\n",
-			arg[0], alphabet:sub(1,koch), koch, percent, number,block,newline or 5)
+			arg[0], alphabet:sub(1,koch), koch, choice, percent and "%" or "", number,block,newline or 5)
 		)
 		--os.exit(1)
 	end,
@@ -42,10 +42,11 @@ local fopt={
 		koch=tonumber(optarg)
 		koch=koch<1 and 1 or koch
 	end,
-	["p"]=function(optarg, optind)
-		percent=tonumber(optarg)
-		percent=percent>100 and 100 or percent
-		percent=percent<0 and 0 or percent
+	["c"]=function(optarg, optind)
+		choice=tonumber(optarg:match("%d*"))
+		choice=choice>100 and 100 or choice
+		choice=choice<0 and 0 or choice
+		percent=optarg:match("%d*%%") and true or false
 	end,
 	["n"]=function(optarg, optind)
 		number=tonumber(optarg)
@@ -60,14 +61,14 @@ local fopt={
 	end,
 	}
 -- quickly process options
-for r, optarg, optind in getopt(arg, "a:k:p:n:b:h") do
+for r, optarg, optind in getopt(arg, "a:k:c:n:b:h") do
 	last_index = optind
 	if fopt[r](optarg, optind) then break end
 end
 koch=koch>#alphabet and #alphabet or koch
 alphabet=alphabet:sub(1,koch)
 alphabet=alphabet:shuffle()
-alphabet=alphabet:sub(1,#alphabet*percent/100)
+alphabet=alphabet:sub(1,percent and #alphabet*choice/100 or choice>#alphabet and #alphabet or choice)
 --io.stderr:write(alphabet, " ", koch, " ", percent, " ", number, " ", block, "\n")  -- debug
 local rnd
 local t={}
