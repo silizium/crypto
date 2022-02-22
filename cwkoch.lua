@@ -32,7 +32,7 @@ local fopt={
 			.."-c	choice <num>[%%] (%d%s)\n"
 			.."-n	number (%d)\n"
 			.."-b	block,newline (%d,%d)\n"
-			.."-p   prefix (%s)\n",
+			.."-p	prefix (%s)\n",
 			arg[0], alphabet:sub(1,koch), koch, choice, percent and "%" or "", 
 			number,block,newline or 5, prefix)
 		)
