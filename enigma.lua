@@ -113,7 +113,7 @@ function Enigma.new(password, options)
 		"QWERTZUIOASDFGHJKPYXCVBNML",	-- Reichsbahn+Schweizer+Abwehr
 		"JWULCMNOHPQZYXIRADKEGVBTSF",	-- Enigma D
 	}
-	if options and options:find("-v")>0 then self.verbose=true end
+	self.verbose=options
 	self.rad={}
 	password=password:upper()
 	local spruch,ring,ukw,walzen,stator,steck=password:match("(%u-),(%u-),(%u),(%w-),(%d),(.*)")
