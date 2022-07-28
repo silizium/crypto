@@ -18,12 +18,12 @@ function skytale(text, key)
 		key=1
 	end
 	-- Auffüllen auf teilbar 
-	for i=1,-(#input%-key) do input[#input+1]=input[#input] end
+	--for i=1,-(#input%-key) do input[#input+1]=input[#input] end
 	-- Matrix-Umordnung
 	local x,y=0,0
 	for x=0,key-1 do
 		for y=0,floor(#input/key)*key,key do
-			tab[#tab+1]=input[x+y+1]
+			if input[x+y+1] then tab[#tab+1]=input[x+y+1] end
 		end
 	end
 	return table.concat(tab)

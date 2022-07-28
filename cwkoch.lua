@@ -18,7 +18,7 @@ math.randomseed(os.time()^5*os.clock())
 local alphabet="elv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-+@:;!_()'\"AOUZKVTES"
 local prefix="vvv[ka]"
 local special={["K"]="[ka]", ["V"]="[ve]", ["T"]="[sk]", ["S"]="[sos]", ["E"]="[hh]",
-	["A"]="[aa]", ["O"]="[oe]", ["U"]="[ue]", ["Z"]="[sz]"}
+	["A"]="[aa]", ["O"]="[oe]", ["U"]="[ut]", ["Z"]="[sz]"}
 local choice,percent,number,koch, block, newline=100,true,50,#alphabet,5,5
 local fopt={
 	["h"]=function(optarg,optind) 
