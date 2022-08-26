@@ -4,7 +4,7 @@
 	it needs the ccrypt library, the luaposix library and the 
 	cw package under Linux or anything else that will transform 
 	text to morse sound.
-	2022 Hanno Behrens
+	CC 2022 Hanno Behrens
 	Dependencies:
 	git pull https://github.com/silizium/crypto
 	sudo luarocks install luaposix
@@ -24,7 +24,7 @@ local fopt={
 	["h"]=function(optarg,optind) 
 		io.stderr:write(
 			string.format(
-			"Percentage Koch generator ©2022 H.Behrens DL7HH\n"
+			"Percentage Koch generator (CC) 2022 H.Behrens DL7HH\n"
 			.."use : %s\n"
 			.."-h	print this help text\n"
 			.."-a	alphabet (%s)\n"
