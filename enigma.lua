@@ -124,8 +124,14 @@ function Enigma.new(password, options)
 	-- END DEBUG
 	if ring:match("%d") then
 		local a,b,c=ring:match("([%d]*)-([%d]*)-([%d]*)")
-		ring=string.char(64+a,64+b,64+c)
+		local d=ring:match("[%d]*-[%d]*-[%d]*-([%d]*)")
+		if d then
+			ring=string.char(64+a,64+b,64+c,64+d)
+		else
+			ring=string.char(64+a,64+b,64+c)
+		end
 	end
+	io.stderr:write(ring,"\n")
 	for i=1,#spruch do
 		walze=walzen:sub(i,i)
 		walze=tonumber(walze) or walze
