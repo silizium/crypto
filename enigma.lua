@@ -116,13 +116,16 @@ function Enigma.new(password, options)
 	self.verbose=options
 	self.rad={}
 	password=password:upper()
-	local spruch,ring,ukw,walzen,stator,steck=password:match("(%u-),(%u-),(%u),(%w-),(%d),(.*)")
+	local spruch,ring,ukw,walzen,stator,steck=password:match("(%u-),([%w-]-),(%u),(%w-),(%d),(.*)")
 	if not(spruch and ring and stator and walzen and ukw and steck) then help()	end
 
 	-- DEBUG
 	if self.verbose then io.stderr:write("Stellung: ",spruch," Ring: ",ring," UKW: ",ukw," Walzen: ",walzen," Stator: ",stator, " Stecker: ", steck, "\n") end
 	-- END DEBUG
-	
+	if ring:match("%d") then
+		local a,b,c=ring:match("([%d]*)-([%d]*)-([%d]*)")
+		ring=string.char(64+a,64+b,64+c)
+	end
 	for i=1,#spruch do
 		walze=walzen:sub(i,i)
 		walze=tonumber(walze) or walze
@@ -136,7 +139,7 @@ function Enigma.new(password, options)
 end
 function help()
 		io.stderr:write("use: enigma.lua <spruch>,<ring>,<ukw>,<walzen>,<stator>,<steck>\n"..
-			"\texample: enigma.lua AAA,AAA,B,123,1,AE-FC-WI\n"..
+			"\texample: enigma.lua AAA,(NN-NN-NN|AAA),B,123,1,AE-FC-WI\n"..
 			"\t  UKW A=old,B=M3B, C=M3C, D=M4B, E=M4C, Reichsbahn, Schweiz, Abwehr\n"..
 			"\t  Walzen 1-8 B=beta G=Gamma\n"..
 			"\t  Stator 1=standard, 2=Reichsbahn, Schweiz, Abwehr, 3=Enigma D\n"..
