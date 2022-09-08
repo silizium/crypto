@@ -131,7 +131,6 @@ function Enigma.new(password, options)
 			ring=string.char(64+a,64+b,64+c)
 		end
 	end
-	io.stderr:write(ring,"\n")
 	for i=1,#spruch do
 		walze=walzen:sub(i,i)
 		walze=tonumber(walze) or walze
