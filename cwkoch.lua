@@ -15,7 +15,7 @@ local getopt = require"posix.unistd".getopt
 local cc = require"ccrypt"
 math.randomseed(os.time()^5*os.clock())
 --              1         11        21        31        41        51         60
-local alphabet="glv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-+@:;!_()'\"AOUZKVTES"
+local alphabet="elv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-+@:;!_()'\"AOUZKVTES"
 local prefix="vvv[ka]"
 local postfix="+"
 local special={["K"]="[ka]", ["V"]="[ve]", ["T"]="[sk]", ["S"]="[sos]", ["E"]="[hh]",
@@ -91,5 +91,5 @@ end
 t=table.concat(t):block(block,(newline or 0)*(block or 0))
 t=t:gsub(".",special):upper()
 --if newline and newline>0 then t=t:gsub("("..("[^ ]+%s+"):rep(newline)..")","%1\n") end
-t=(#prefix>0 and prefix.."\n" or "")..t..(#postfix>0 and "\n"..postfix.."\n" or "")
+t=(#prefix>0 and prefix.."\n" or "")..t..(#postfix>0 and postfix.."\n" or "")
 io.write(t)
