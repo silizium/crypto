@@ -15,11 +15,12 @@ local getopt = require"posix.unistd".getopt
 local cc = require"ccrypt"
 math.randomseed(os.time()^5*os.clock())
 --              1         11        21        31        41        51         60
-local alphabet="elv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-+@:;!_()'\"AOUZKVTES"
+local alphabet="glv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-+@:;!_()'\"AOUZKVTES"
 local prefix="vvv[ka]"
+local postfix="+"
 local special={["K"]="[ka]", ["V"]="[ve]", ["T"]="[sk]", ["S"]="[sos]", ["E"]="[hh]",
 	["A"]="[aa]", ["O"]="[oe]", ["U"]="[ut]", ["Z"]="[sz]"}
-local choice,percent,number,koch, block, newline=100,true,50,#alphabet,5,5
+local choice,percent,number,koch, block, newline, gap=100,true,50,#alphabet,5,5,0
 local fopt={
 	["h"]=function(optarg,optind) 
 		io.stderr:write(
@@ -32,9 +33,11 @@ local fopt={
 			.."-c	choice <num>[%%] (%d%s)\n"
 			.."-n	number (%d)\n"
 			.."-b	block,newline (%d,%d)\n"
-			.."-p	prefix (%s)\n",
-			arg[0], alphabet:sub(1,koch), koch, choice, percent and "%" or "", 
-			number,block,newline or 5, prefix)
+			.."-p	prefix (%s)\n"
+			.."-e	postfix (%s)\n"
+			.."-g	gap (%d)\n",
+			arg[0],galphabet:sub(1,koch), koch, choice, percent and "%" or "", 
+			number,block,newline or 5, prefix, postfix)
 		)
 		--os.exit(1)
 	end,
@@ -60,6 +63,9 @@ local fopt={
 	["p"]=function(optarg, optind)
 		prefix=optarg
 	end,
+	["e"]=function(optarg, optind)
+		postfix=optarg
+	end,
 
 	["?"]=function(optarg, optind)
 		print('unrecognized option', arg[optind -1])
@@ -67,7 +73,7 @@ local fopt={
 	end,
 	}
 -- quickly process options
-for r, optarg, optind in getopt(arg, "a:k:c:n:b:p:h") do
+for r, optarg, optind in getopt(arg, "a:k:c:n:b:p:e:h") do
 	last_index = optind
 	if fopt[r](optarg, optind) then break end
 end
@@ -85,5 +91,5 @@ end
 t=table.concat(t):block(block,(newline or 0)*(block or 0))
 t=t:gsub(".",special):upper()
 --if newline and newline>0 then t=t:gsub("("..("[^ ]+%s+"):rep(newline)..")","%1\n") end
-t=prefix.."\n"..t.."+\n"
+t=(#prefix>0 and prefix.."\n" or "")..t..(#postfix>0 and "\n"..postfix.."\n" or "")
 io.write(t)
