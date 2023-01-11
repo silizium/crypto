@@ -14,35 +14,42 @@
 local getopt = require"posix.unistd".getopt
 local cc = require"ccrypt"
 math.randomseed(os.time()^5*os.clock())
---              1         11        21        31        41        51         60
-local alphabet="elv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-+@:;!_()'\"AOUZKVTES"
+--               1         11        21        31        41        51         60
+local alphabet={"elv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-@:;!_+()'\"AOUZKVTES", --koch
+                "kmuresnaptlwi.jz=foy,vg5/q92h38b?47c1d60x-AOUZE+@:;!_()'\"KVTS", --lcwo
+				"teanois14rhdl25ucmw36?fypg79/bvkj80=xqz.,-AOUZE+@:;!_()'\"KVTS", --m32
+				"adgxvel0qst2co5/ir9f4nu7h,=.bkp3myjwz168?-@:;!_+()'\"AOUZKVTES", --adgvx
+}
+local amethod={"Koch/E13", "LCWO", "M32", "ADGVX"}
 local prefix="vvv[ka]"
 local postfix="+"
 local special={["K"]="[ka]", ["V"]="[ve]", ["T"]="[sk]", ["S"]="[sos]", ["E"]="[hh]",
 	["A"]="[aa]", ["O"]="[oe]", ["U"]="[ut]", ["Z"]="[sz]"}
-local choice,percent,number,koch, block, newline, gap=100,true,50,#alphabet,5,5,0
+local method=1
+local choice,percent,number,koch, block, newline, gap=100,true,50,#alphabet[method],5,5,0
 local fopt={
 	["h"]=function(optarg,optind) 
 		io.stderr:write(
 			string.format(
-			"Percentage Koch generator (CC) 2022 H.Behrens DL7HH\n"
+			"Percentage Koch generator (CC) 2023 H.Behrens DL7HH\n"
 			.."use : %s\n"
 			.."-h	print this help text\n"
 			.."-a	alphabet (%s)\n"
 			.."-k	kochlevel (%d)\n"
 			.."-c	choice <num>[%%] (%d%s)\n"
+			.."-m	method (%d %s)\n"
 			.."-n	number (%d)\n"
 			.."-b	block,newline (%d,%d)\n"
 			.."-p	prefix (%s)\n"
 			.."-e	postfix (%s)\n"
 			.."-g	gap (%d)\n",
-			arg[0],galphabet:sub(1,koch), koch, choice, percent and "%" or "", 
-			number,block,newline or 5, prefix, postfix)
+			arg[0],alphabet[method]:sub(1,koch), koch, choice, percent and "%" or "", 
+			method, amethod[method],number,block,newline or 5,prefix,postfix,gap)
 		)
 		--os.exit(1)
 	end,
 	["a"]=function(optarg, optind)
-		alphabet=optarg
+		alphabet[method]=optarg
 	end,
 	["k"]=function(optarg, optind)
 		koch=tonumber(optarg)
@@ -52,6 +59,11 @@ local fopt={
 		choice=tonumber(optarg:match("%d*"))
 		choice=choice<0 and 0 or choice
 		percent=optarg:match("%d*%%") and true or false
+	end,
+	["m"]=function(optarg, optind)
+		method=tonumber(optarg)
+		if method < 1 then method=1 end
+		if method > #alphabet then method=#alphabet end
 	end,
 	["n"]=function(optarg, optind)
 		number=tonumber(optarg)
@@ -73,10 +85,11 @@ local fopt={
 	end,
 	}
 -- quickly process options
-for r, optarg, optind in getopt(arg, "a:k:c:n:b:p:e:h") do
+for r, optarg, optind in getopt(arg, "a:k:c:m:n:b:p:e:h") do
 	last_index = optind
 	if fopt[r](optarg, optind) then break end
 end
+alphabet=alphabet[method]
 koch=koch>#alphabet and #alphabet or koch
 alphabet=alphabet:sub(1,koch)
 alphabet=alphabet:shuffle()
