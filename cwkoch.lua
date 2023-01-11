@@ -37,7 +37,7 @@ local fopt={
 			.."-a	alphabet (%s)\n"
 			.."-k	kochlevel (%d)\n"
 			.."-c	choice <num>[%%] (%d%s)\n"
-			.."-m	method (%d %s)\n"
+			.."-m	method (%d:%s)\n"
 			.."-n	number (%d)\n"
 			.."-b	block,newline (%d,%d)\n"
 			.."-p	prefix (%s)\n"
