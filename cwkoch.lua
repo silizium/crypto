@@ -43,7 +43,7 @@ local fopt={
 			.."-p	prefix (%s)\n"
 			.."-e	postfix (%s)\n"
 			.."-g	gap (%d)\n"
-			.."\n	Default alphabets:\n",
+			.."\n	Default alphabets (-m):\n",
 			arg[0],alphabet[method]:sub(1,koch), koch, choice, percent and "%" or "", 
 			method, amethod[method],number,block,newline or 5,prefix,postfix,gap)
 		)
