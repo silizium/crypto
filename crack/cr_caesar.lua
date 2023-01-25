@@ -73,8 +73,8 @@ end
 table.sort(list, function(k1, k2) return k1[2]>k2[2] end)
 --print the first best 20%
 for i=1,#list do 
-	io.stderr:write(list[i][1], " ", list[i][2], " ", list[i][3])
 	if list[i][2]<0.8*max then break end
+	io.stderr:write(list[i][1], " ", list[i][2], " ", list[i][3])
 end
 --best guess
 io.stderr:write("Best guess - Key: ",max_key," rating: ",max, "\n")
