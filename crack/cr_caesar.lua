@@ -71,10 +71,10 @@ for key=0,25 do
 end
 --sorted list
 table.sort(list, function(k1, k2) return k1[2]>k2[2] end)
---print the first best 20%
-for i=1,#list do 
-	if list[i][2]<0.8*max then break end
-	io.stderr:write(list[i][1], " ", list[i][2], " ", list[i][3])
+--print the first best 30%
+for _,v in ipairs(list) do 
+	if v[2]<0.7*max then break end
+	io.stderr:write(string.format("%2d %1.2f %s", v[1], v[2], v[3]))
 end
 --best guess
 io.stderr:write("Best guess - Key: ",max_key," rating: ",max, "\n")
