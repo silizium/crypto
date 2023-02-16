@@ -54,6 +54,7 @@ function gram_rating(text)
 
 	return birate+trirate
 end
+
 local text=io.read("*a"):upperutf() -- read STDIN 
 local alphabet=arg[1]~=null and arg[1] or "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 

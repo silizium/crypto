@@ -31,10 +31,16 @@ local station="EDDH"
 local fp=io.popen("curl -s https://tgftp.nws.noaa.gov/data/observations/metar/stations/"..station..".TXT")
 local report=fp:read("*a")
 --[[
+https://de.wikipedia.org/wiki/METAR
  EDDH 100850Z AUTO 21008KT 180V260 9999 FEW046 20/10 Q1021 NOSIG
  2022/10/25 07:20
  EDDH 250720Z AUTO 22008KT 9999 SCT012 OVC019 13/12 Q1011 NOSIG
+ 2023/02/03 07:50
+ EDDH 030750Z AUTO 27020G31KT 250V310 7000 -RA BKN009 OVC014 08/07 Q1011 RERA BECMG SCT009
 ]]--
 fp:close()
-report=report:gsub("%u%u",function(x) print(x) end)
+local wx={}
+report:gsub("%S+",function(token) wx[#wx+1]=token end)
+table.foreach(wx, print)
+--report=report:gsub("%u+",function(x) print(x) end)
 print(report)
