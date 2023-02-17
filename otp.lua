@@ -23,7 +23,7 @@ function loadbook(file)
 	local tab={}
 	for c,w in text:gmatch("(%S+)%s+(%C+)\n") do
 		if w=="<SPC>" then w=" " end
-		tab[#tab+1]={c,w}
+		if c and w then tab[#tab+1]={c,w} end
 	end
 	return tab
 end
@@ -38,7 +38,7 @@ function figlet(book)
 	return fig,let
 end
 function string.codebook_encode(text,book)
-	table.sort(book,function(a,b) return (#a[2]>#b[2] or #a[1]>#b[1]) end)
+	table.sort(book,function(a,b) return #a[2]>#b[2] or (#a[2]==#b[2] and #a[1]>#b[1]) end)
 	--for _,b in ipairs(book) do print(b[1], b[2]) end 
 	local enc={}
 	local fig,let=figlet(book)
@@ -69,7 +69,7 @@ function string.codebook_encode(text,book)
 end
 
 function string.codebook_decode(text,book)
-	table.sort(book,function(a,b) return #a[1]>#b[1] end)
+	table.sort(book,function(a,b) return #a[1]>#b[1] or (#a[1]==#b[1] and #a[2]>#b[2]) end)
 	--for _,b in ipairs(book) do print(b[1], b[2]) end 
 	local dec={}
 	local fig,let=figlet(book)
