@@ -2,7 +2,7 @@
 2       E
 3       I
 4       N
-5       O
+5       R
 6       T
 70      B
 71      C
@@ -14,9 +14,9 @@
 77      K
 78      L
 79      M
-80      P
-81      Q
-82      R
+80      O
+81      P
+82      Q
 83      S
 84      U
 85      V
@@ -259,7 +259,7 @@
 0745	SÜCHTIG
 0746	SUCHT
 0747	ALKOHOL
-0748	BIER
+0748	VITAMIN
 0749	ESSEN
 0750	FEUER
 0751	BUND
