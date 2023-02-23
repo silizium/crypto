@@ -171,6 +171,7 @@ local fopt={
 			.."-d	decrypt (%s)\n",
 			arg[0], bookname, otpname, start, decrypt)
 		)	
+		os.exit(EXIT_FAILURE)
 	end,
 	["b"]=function(optarg, optind)
 		bookname=optarg
