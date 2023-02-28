@@ -157,7 +157,7 @@ function string.otp_decrypt(text, otp)
 	return table.concat(res)
 end
 
-local bookname,otpname,decrypt,start="otp-book.txt","otp-codes.txt",false
+local bookname,otpname,decrypt,start="codebooks/funkbuch.txt","otp-codes/test_donotuse.txt",false
 local fopt={
 	["h"]=function(optarg,optind) 
 		io.stderr:write(
