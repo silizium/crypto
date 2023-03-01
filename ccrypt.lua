@@ -1,4 +1,5 @@
 -- ccrypt.lua
+require "stable_sort"
 ccrypt={}
 ccrypt.Unicode="[%z\1-\127\194-\244][\128-\191]*"
 local Unicode="("..ccrypt.Unicode..")"
