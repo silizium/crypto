@@ -8,7 +8,7 @@ local fopt={
 	["h"]=function(optarg,optind) 
 		io.stderr:write(
 			string.format(
-			"AFDGVX encrypter (CC)2023 H.Behrens DL7HH\n"
+			"Polybius encrypter (CC)2023 H.Behrens DL7HH\n"
 			.."use: %s\n"
 			.."-h	print this help text\n"
 			.."-a	alphabet (%s)\n"
