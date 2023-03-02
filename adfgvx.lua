@@ -12,9 +12,9 @@ function string.umlauts(text)
 	return text
 end
 
-function sort_column(t, column)
+function sort_column_char(t, password)
 	local r=1
-	for c in column:gmatch("%w") do
+	for c in password:gmatch("%w") do
 		t[r]={char=c,code=t[r]}
 		r=r+1
 	end
@@ -26,6 +26,9 @@ function sort_column(t, column)
 	end
 	return table.concat(v)
 end
+function sort_column_nr(t)
+	return table.stable_sort(t, function(a,b) return a.nr<b.nr end)
+end
 
 function text_iter(text)
 	local nc=coroutine.create(function() 
@@ -35,7 +38,42 @@ function text_iter(text)
 	end)
 	return nc
 end
-function string.wuerfelc_encrypt(text,column)
+function string.wuerfelrow_encrypt(text, row)
+	local t,len,mod={},math.floor(#text/#row),#text%#row
+	local start,ende=1,len
+
+	for i=1,#row do
+		if i<=mod then ende=ende+1 end
+		t[i]=text:sub(start,ende)
+		start=ende+1
+		ende=start+len-1
+	end
+	return sort_column_char(t, row)
+end
+function string.wuerfelrow_decrypt(text, row)
+	local t={}
+	for i=1,#row do t[#t+1]={char=row:sub(i,i), nr=i, code=""} end
+	
+	table.stable_sort(t,function(a,b) return a.char<b.char end)
+	
+	local len,mod=math.floor(#text/#row),#text%#row
+	local start,ende=1,len
+	for i=1,#row do
+		if t[i].nr<=mod then ende=ende+1 end
+		t[i].code=text:sub(start,ende)
+		start=ende+1
+		ende=start+len-1
+	end
+
+	sort_column_nr(t)
+
+	local v={}
+	for i=1,#t do
+		v[i]=t[i].code
+	end
+	return table.concat(v)
+end
+function string.wuerfelcol_encrypt(text,column)
 	local t={}
 	local r=0
 	for c in text:gmatch("%w") do
@@ -46,18 +84,19 @@ function string.wuerfelc_encrypt(text,column)
 	for i,c in ipairs(t) do
 		t[i]=table.concat(c)
 	end
-	return sort_column(t, column)
+	return sort_column_char(t, column)
 end
-function string.wuerfelc_decrypt(text,column)
+function string.wuerfelcol_decrypt(text,column)
 	local t={}
 	for i=1,#column do t[#t+1]={char=column:sub(i,i),nr=i,code={}} end
+
 	table.stable_sort(t,function(a,b) return a.char<b.char end)
 
-	local txt_iter=text_iter(text)
+	local nextchar=text_iter(text)
 	local r,min,mod=0,math.floor(#text/#column),#text%#column
 	repeat
-		local _,c=coroutine.resume(txt_iter)
-		if coroutine.status(txt_iter)=="dead" then break end
+		local _,c=coroutine.resume(nextchar)
+		if coroutine.status(nextchar)=="dead" then break end
 		local cur=t[r+1]
 		cur.code[#cur.code+1]=c
 		if #cur.code >= min+(cur.nr<=mod and 1 or 0)  then 
@@ -65,7 +104,7 @@ function string.wuerfelc_decrypt(text,column)
 		end
 	until false
 
-	table.stable_sort(t, function(a,b) return a.nr<b.nr end)
+	sort_column_nr(t)
 
 	local v={}
 	local r=1
@@ -75,7 +114,6 @@ function string.wuerfelc_decrypt(text,column)
 		end
 		r=r+1
 	end
---	os.exit()
 	return table.concat(v)
 end
 
@@ -107,12 +145,14 @@ end
 
 function string.adfgvx_encrypt(text, alphabet, matrix, column, row)
 	text=text:polybios_encrypt(alphabet,matrix)
-	if column then text=text:wuerfelc_encrypt(column) end
+	if column then text=text:wuerfelcol_encrypt(column) end
+	if row	  then text=text:wuerfelrow_encrypt(row) end
 	return text
 end
 
 function string.adfgvx_decrypt(text, alphabet, matrix, column, row)
-	if column then text=text:wuerfelc_decrypt(column) end
+	if row then text=text:wuerfelrow_decrypt(row) end
+	if column then text=text:wuerfelcol_decrypt(column) end
 	text=text:polybios_decrypt(alphabet,matrix)
 	return text
 end
