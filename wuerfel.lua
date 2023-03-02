@@ -39,6 +39,7 @@ for r, optarg, optind in getopt(arg, "p:rdh") do
 end
 
 local text=io.read("*a"):upper():umlauts()
+text=text:gsub("[^%w]", "")
 if not decrypt then
 	if not rows then 
 		text=text:wuerfelcol_encrypt(password) 
