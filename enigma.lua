@@ -216,7 +216,7 @@ if self.verbose then io.stderr:write(char,"\n") end
 end
 
 -- Aufruf der Enigma Routinen
-if arg[1]=="--help" then help() end
+if arg[1]=="--help" or arg[1]=="-h" then help() end
 local key,decrypt,english,verbose="AAA,AAA,B,123,1,",false,false,false
 for i=1,#arg do
 	if arg[i]=="-d" then
