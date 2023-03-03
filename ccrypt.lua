@@ -451,7 +451,7 @@ function string.codebook_decode(text,book)
 	table.sort(book,function(a,b) return #a[1]>#b[1] or (#a[1]==#b[1] and #a[2]>#b[2]) end)
 	--for _,b in ipairs(book) do print(b[1], b[2]) end 
 	local dec={}
-	local fig,let=figlet(book)
+	local fig,let=codebook.figlet(book)
 	local figures=false
 	local i=1
 	while i<=#text do

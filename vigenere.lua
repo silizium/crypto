@@ -1,47 +1,95 @@
-#!/usr/bin/env luajit
-require"ccrypt"
-function Encrypt( _msg, _key )    
-    local msg = { _msg:upper():byte( 1, -1 ) }
-    local key = { _key:upper():byte( 1, -1 ) }    
-    local enc = {}
- 
-    local j, k = 1, 1
-    for i = 1, #msg do    
-        if msg[i] >= string.byte('A') and msg[i] <= string.byte('Z') then
-            enc[k] = ( msg[i] + key[j] - 2*string.byte('A') ) % 26 + string.byte('A')
- 
-            k = k + 1
-            if j == #key then j = 1 else j = j + 1 end
-        end
-    end
- 
-    return string.char( unpack(enc) )
+#!env luajit
+require "ccrypt"
+local getopt = require"posix.unistd".getopt
+
+function vigenere_make(password, alphabet)
+	local t={}
+	for c in password:gmatch("%w") do
+		local from, to=alphabet:find(c)
+		t[#t+1]=alphabet:sub(from,-1)..alphabet:sub(1,from-1)
+	end
+	return t
 end
- 
-function Decrypt( _msg, _key )
-    local msg = { _msg:byte( 1, -1 ) }
-    local key = { _key:upper():byte( 1, -1 ) }      
-    local dec = {}
- 
-    local j = 1
-    for i = 1, #msg do            
-       dec[i] = ( msg[i] - key[j] + 26 ) % 26 + string.byte('A')
- 
-       if j == #key then j = 1 else j = j + 1 end
-    end    
- 
-    return string.char( unpack(dec) )
+
+function string.vigenere_encrypt(text,password,alphabet)
+	local v,t={}
+	t=vigenere_make(password,alphabet)
+	-- encode vigenere
+	local r=0
+	for c in text:gmatch("%w") do
+		local from,to=alphabet:find(c)
+		v[#v+1]=t[r+1]:sub(from,from)
+		r=(r+1)%#password
+	end
+	return table.concat(v)
 end
- 
- 
--- original = "Beware the Jabberwock, my son! The jaws that bite, the claws that catch!"
-local text=io.read("*a"):upper()
-text=text:substitute(("äöü"):subst_table("ÄÖÜ"))
-local enc_key={["ß"]="SZ", ["Ä"]="AE", ["Ö"]="OE", ["Ü"]="UE"}
-text=text:substitute(enc_key)
-local key = arg[1] and arg[1] or "VIGENERECIPHER"
- 
-encrypted = arg[2]=='-d' and Decrypt(text, key) or Encrypt( text, key )
- 
-io.write( encrypted )
--- print( decrypted )
+
+function string.vigenere_decrypt(text,password,alphabet)
+	local v,t={}
+	t=vigenere_make(password,alphabet)
+	-- decode vigenere
+	local r=0
+	for c in text:gmatch("%w") do
+		local from,to=t[r+1]:find(c)
+		v[#v+1]=alphabet:sub(from,from)
+		r=(r+1)%#password
+	end
+	return table.concat(v)
+end
+
+local alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+local password,decrypt,randomize="SECRET",false,false
+local fopt={
+	["h"]=function(optarg,optind) 
+		io.stderr:write(
+			string.format(
+			"Vigenere cipher (CC)2023 H.Behrens DL7HH\n"
+			.."use: %s\n"
+			.."-h	print this help text\n"
+			.."-a	alphabet (%s)\n"
+			.."-p	password (%s)\n"
+			.."-r	randomize (%s)\n"
+			.."-d	decrypt (%s)\n",
+			arg[0], alphabet, password, randomize, decrypt)
+		)	
+		os.exit(EXIT_FAILURE)
+	end,
+	["a"]=function(optarg, optind)
+		alphabet=optarg:upper():umlauts()
+	end,
+	["p"]=function(optarg, optind)
+		password=optarg:upper():umlauts()
+	end,
+	["r"]=function(optarg, optind)
+		randomize=optarg
+		if optarg=="time" then
+			math.randomseed(os.time()^5+os.clock())
+		else
+			math.randomseed(tonumber(optarg))
+		end
+		alphabet=alphabet:shuffle()
+	end,
+	["d"]=function(optarg, optind)
+		decrypt=true
+	end,
+	["?"]=function(optarg, optind)
+		io.stderr:write(string.format("unrecognized option %s\n", arg[optind -1]))
+		return true
+	end,
+}
+-- quickly process options
+for r, optarg, optind in getopt(arg, "a:p:r:dh") do
+	last_index = optind
+	if fopt[r](optarg, optind) then break end
+end
+
+local text=io.read("*a"):upper():umlauts()
+text=text:gsub("[^"..alphabet.."]","") -- filter valid characters
+if not decrypt then
+	text=text:vigenere_encrypt(password,alphabet)
+else
+	text=text:vigenere_decrypt(password,alphabet)
+end
+io.write(text)
+
+
