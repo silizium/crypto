@@ -16,7 +16,7 @@ function string.adfgvx_decrypt(text, alphabet, matrix, column, row)
 	return text
 end
 
-local alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+local alphabet="ABCDEFGHIJJKLMNOPQRSTUVWXYZ0123456789"
 local matrix,decrypt,column,row="ADFGVX",false
 local fopt={
 	["h"]=function(optarg,optind) 

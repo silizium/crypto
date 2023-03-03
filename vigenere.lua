@@ -46,9 +46,9 @@ local fopt={
 			"Vigenere cipher (CC)2023 H.Behrens DL7HH\n"
 			.."use: %s\n"
 			.."-h	print this help text\n"
-			.."-a	alphabet (%s)\n"
-			.."-p	password (%s)\n"
-			.."-r	randomize (%s)\n"
+			.."-a	alphabet (%s) \n\taccepts all non spaces\n"
+			.."-p	password (%s) \n\taccepts all that are in alphabet\n"
+			.."-r	randomize (%s) \n\taccepts \"time\" or seed number\n"
 			.."-d	decrypt (%s)\n",
 			arg[0], alphabet, password, randomize, decrypt)
 		)	
@@ -59,6 +59,7 @@ local fopt={
 	end,
 	["p"]=function(optarg, optind)
 		password=optarg:upper():umlauts()
+		password=password:gsub("[^"..alphabet.."]","") -- filter valid characters
 	end,
 	["r"]=function(optarg, optind)
 		randomize=optarg
@@ -68,6 +69,7 @@ local fopt={
 			math.randomseed(tonumber(optarg))
 		end
 		alphabet=alphabet:shuffle()
+		io.stderr:write("random alphabet: ",alphabet,"\n")
 	end,
 	["d"]=function(optarg, optind)
 		decrypt=true
