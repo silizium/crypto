@@ -42,8 +42,7 @@ local fopt={
 		if (#matrix)^2 < #alphabet then
 			io.stderr:write("WARNING: matrix is ",(#matrix)^2," and is smaller than the alphabet ",alphabet,"\n")
 		elseif (#matrix)^2 > #alphabet then
-			io.stderr:write("ERROR: matrix is ",(#matrix)^2," and is larger than alphabet ",#alphabet,"\n")
-			io.exit(EXIT_FAILURE)
+			io.stderr:write("WARNING: matrix is ",(#matrix)^2," and is larger than alphabet ",#alphabet,"\n")
 		end
 	end,
 	["r"]=function(optarg, optind)

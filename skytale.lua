@@ -1,35 +1,45 @@
-#!/usr/bin/env luajit
-require 'ccrypt'
+#!env luajit
+require "ccrypt"
+local getopt = require"posix.unistd".getopt
 
-local floor,ceil=math.floor, math.ceil
-
-function skytale(text, key)
-	local tab={}  -- leere Tabelle
-	local pos=0
-	local input={}
-	for c in text:utf8all() do
-		input[#input+1]=c
-	end
-	-- Berechnen des Komplementär-Keys, Sicherheit
-	if key>#input then key=key%#input end
-	if key<0 then 
-		key=ceil(#input/-key)
-	elseif key==0 then 
-		key=1
-	end
-	-- Auffüllen auf teilbar 
-	--for i=1,-(#input%-key) do input[#input+1]=input[#input] end
-	-- Matrix-Umordnung
-	local x,y=0,0
-	for x=0,key-1 do
-		for y=0,floor(#input/key)*key,key do
-			if input[x+y+1] then tab[#tab+1]=input[x+y+1] end
-		end
-	end
-	return table.concat(tab)
+local decrypt,password=false,2
+local fopt={
+	["h"]=function(optarg,optind) 
+		io.stderr:write(
+			string.format(
+			"Skytale transposition encrypter (CC)2023 H.Behrens DL7HH\n"
+			.."use: %s\n"
+			.."-h	print this help text\n"
+			.."-p	passwort (%d)\n"
+			.."-d	decrypt (%s)\n",
+			arg[0], password, decrypt)
+		)	
+		os.exit(EXIT_FAILURE)
+	end,
+	["p"]=function(optarg, optind)
+		password=tonumber(optarg:upper())
+	end,
+	["d"]=function(optarg, optind)
+		decrypt=true
+	end,
+	["?"]=function(optarg, optind)
+		io.stderr:write(string.format("unrecognized option %s\n", arg[optind -1]))
+		return true
+	end,
+}
+-- quickly process options
+for r, optarg, optind in getopt(arg, "p:rdh") do
+	last_index = optind
+	if fopt[r](optarg, optind) then break end
 end
 
-local key=arg[1] and tonumber(arg[1]) or 2 -- Gartenzaun
-local text=io.read("*a")
-local enc=skytale(text, key)
-io.write(enc)
+local text=io.read("*a"):upper():umlauts()
+text=text:gsub("[^%w]", "")
+password=("A"):rep(password)
+if not decrypt then
+	text=text:wuerfelcol_encrypt(password) 
+else
+	text=text:wuerfelcol_decrypt(password) 
+end
+io.write(text)
+
