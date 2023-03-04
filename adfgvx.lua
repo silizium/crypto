@@ -40,9 +40,9 @@ local fopt={
 	["m"]=function(optarg, optind)
 		matrix=optarg:upper():umlauts()
 		if (#matrix)^2 < #alphabet then
-			io.stderr:write("WARNING: matrix has ",(#matrix)^2," and is smaller then the alphabet ",alphabet,"\n")
+			io.stderr:write("WARNING: matrix is ",(#matrix)^2," and is smaller than the alphabet ",alphabet,"\n")
 		elseif (#matrix)^2 > #alphabet then
-			io.stderr:write("ERROR: matrix is ",(#matrix)^2," is larger than alphabet ",#alphabet,"\n")
+			io.stderr:write("ERROR: matrix is ",(#matrix)^2," and is larger than alphabet ",#alphabet,"\n")
 			io.exit(EXIT_FAILURE)
 		end
 	end,
