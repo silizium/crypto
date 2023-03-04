@@ -44,7 +44,7 @@ local fopt={
 		alphabet=alphabet:reverse()
 	end,
 	["t"]=function(optarg, optind)
-		column=optarg
+		column=optarg:upper():umlauts()
 		alphabet=alphabet:wuerfelcol_encrypt(column)
 	end,
 	["s"]=function(optarg, optind)
