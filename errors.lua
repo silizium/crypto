@@ -1,4 +1,5 @@
 #!env luajit
+-- inserts random errors into a "codegroup" transmission
 local err=arg[1] and arg[1] or 3
 err=err/100
 local alpha="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
