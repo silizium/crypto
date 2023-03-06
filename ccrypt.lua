@@ -276,11 +276,77 @@ end
 
 --[[ 
 
-Verwürfelung 
+Verwürfelung - transposition
 
 ]]--
 
+function sort_column_input()
+	table.sort(v,function(a,b) return a.input<b.input end)
+end
+function sort_column_output()
+	table.sort(v,function(a,b) return a.output<b.output end)
+end
 
+function table.concat_char(t)
+	u={}
+	for i=1,#t do
+		u[#u+1]=t[i].char
+	end
+	return table.concat(u)
+end
+
+function table.railfence_input_output(rails, length)
+	local v={}
+	for i=1,rails do v[i]={} end
+	local r,inc=1,1
+	for i=1,length do
+		v[r][(#v[r])+1]={input=i}
+		r=r+inc
+		if r>rails or r<1 then inc=-inc r=r+inc*2 end
+		i=i+1
+	end
+	-- collapse and place cipher-index
+	local u={}
+	local i=1
+	for k1,v1 in ipairs(v) do
+		for k2,v2 in ipairs(v1) do
+			v2.output=i
+			u[#u+1]=v2
+			i=i+1
+		end
+	end
+	return u
+end
+function string.railfence_encrypt(text,rails)
+	if rails<=1 then return text end
+	local v=table.railfence_input_output(rails,#text)
+	table.stable_sort(v,function(a,b) return a.input<b.input end)
+	local i=1
+	for c in text:utf8all() do
+		v[i].char=c
+		i=i+1
+	end
+	table.stable_sort(v,function(a,b) return a.output<b.output end)
+	return table.concat_char(v)
+end
+function string.railfence_decrypt(text,rails)
+	if rails<=1 then return text end
+	local v=table.railfence_input_output(rails,#text)
+	table.stable_sort(v,function(a,b) return a.output<b.output end)
+	local i=1
+	for c in text:utf8all() do
+		v[i].char=c
+		i=i+1
+	end
+	table.stable_sort(v,function(a,b) return a.input<b.input end)
+	return table.concat_char(v)
+end
+
+--[[
+
+Würfel cipher
+
+]]--
 function sort_column_char(t, password)
 	local r=1
 	for c in password:gmatch("%w") do
@@ -296,9 +362,8 @@ function sort_column_char(t, password)
 	return table.concat(v)
 end
 function sort_column_nr(t)
-	return table.stable_sort(t, function(a,b) return a.nr<b.nr end)
+	return table.sort(t, function(a,b) return a.nr<b.nr end)
 end
-
 function text_iter(text)
 	local nc=coroutine.create(function() 
 		for c in text:gmatch("%w") do
@@ -437,37 +502,6 @@ function string.codebook_encode(text,book)
 				end
 				word=word..w[1]
 				i=i+#w[2]-1
-				break ::out::
-			end
-		end
-		::out::
-		enc[#enc+1]=word
-		i=i+1
-	end
-	return table.concat(enc)
-end
-
-function string.codebook_decode(text,book)
-	table.sort(book,function(a,b) return #a[1]>#b[1] or (#a[1]==#b[1] and #a[2]>#b[2]) end)
-	--for _,b in ipairs(book) do print(b[1], b[2]) end 
-	local dec={}
-	local fig,let=codebook.figlet(book)
-	local figures=false
-	local i=1
-	while i<=#text do
-		local word=""
-		local code,clear
-		for _,w in ipairs(book) do
-			code,clear=w[1],w[2]
-			if text:sub(i,i+#code-1)==code then
-				if code==fig then figures=true  i=i+1 goto out end
-				if code==let then figures=false i=i+1 goto out end
-				if clear:match("%d") and not figures then
-					goto cont
-				end
-				if clear:match("%D") and figures then
-					goto cont
-				end
 				word=clear
 				i=i+#code-1
 				goto out
