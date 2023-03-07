@@ -29,10 +29,12 @@ local fopt={
 	end,
 }
 -- quickly process options
+local last_index=1
 for r, optarg, optind in getopt(arg, "r:dh") do
 	last_index = optind
 	if fopt[r](optarg, optind) then break end
 end
+if arg[last_index] then rails=tonumber(arg[last_index]) end
 
 local text=io.read("*a"):upper():umlauts()
 text=text:gsub("[^%w]", "")

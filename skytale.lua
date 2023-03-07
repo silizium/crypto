@@ -28,10 +28,13 @@ local fopt={
 	end,
 }
 -- quickly process options
-for r, optarg, optind in getopt(arg, "p:rdh") do
+local last_index=1
+for r, optarg, optind in getopt(arg, "p:dh") do
 	last_index = optind
 	if fopt[r](optarg, optind) then break end
 end
+if arg[last_index] then password=tonumber(arg[last_index]) end
+
 
 local text=io.read("*a"):upper():umlauts()
 text=text:gsub("[^%w]", "")
