@@ -59,7 +59,7 @@ table.sort(list, function(a, b) return a.weight>b.weight end)
 local percent=arg[1] or tonumber(arg[1]) or 0.7
 for _,v in ipairs(list) do 
 	if v.weight<percent*max then break end
-	io.stderr:write(string.format("%2d %1.2f %s", v.rail, v.weight, v.text))
+	io.stderr:write(string.format("%2d %1.2f %s\n", v.rail, v.weight, v.text))
 end
 --best guess
 io.stderr:write("\nBest guess - Key: ",max_key," rating: ",max, "\n")
