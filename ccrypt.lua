@@ -460,7 +460,7 @@ Codebooks
 codebook={}
 function codebook.load(file)
 	file=file or "otp-book.txt"
-	local fp=io.open(file)
+	local fp=assert(io.open(file))
 	local text=fp:read("*a")
 	fp:close()
 	text=text:upper():umlauts()
@@ -481,6 +481,7 @@ function codebook.figlet(book)
 	end
 	return fig,let
 end
+
 function string.codebook_encode(text,book)
 	table.sort(book,function(a,b) return #a[2]>#b[2] or (#a[2]==#b[2] and #a[1]>#b[1]) end)
 	--for _,b in ipairs(book) do print(b[1], b[2]) end 
@@ -502,6 +503,37 @@ function string.codebook_encode(text,book)
 				end
 				word=word..w[1]
 				i=i+#w[2]-1
+				break ::out::
+			end
+		end
+		::out::
+		enc[#enc+1]=word
+		i=i+1
+	end
+	return table.concat(enc)
+end
+
+function string.codebook_decode(text,book)
+	table.sort(book,function(a,b) return #a[1]>#b[1] or (#a[1]==#b[1] and #a[2]>#b[2]) end)
+	--for _,b in ipairs(book) do print(b[1], b[2]) end 
+	local dec={}
+	local fig,let=codebook.figlet(book)
+	local figures=false
+	local i=1
+	while i<=#text do
+		local word=""
+		local code,clear
+		for _,w in ipairs(book) do
+			code,clear=w[1],w[2]
+			if text:sub(i,i+#code-1)==code then
+				if code==fig then figures=true  i=i+1 goto out end
+				if code==let then figures=false i=i+1 goto out end
+				if clear:match("%d") and not figures then
+					goto cont
+				end
+				if clear:match("%D") and figures then
+					goto cont
+				end
 				word=clear
 				i=i+#code-1
 				goto out

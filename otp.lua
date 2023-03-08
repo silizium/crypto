@@ -7,7 +7,7 @@ local getopt = require"posix.unistd".getopt
 
 
 function loadotp(file,start)
-	file=file or "otp-codes.txt"
+	file=file or "otp-code/otp-codes.txt"
 	local fp=io.open(file)
 	if not fp then return nil end
 	local text=fp:read("*a")
