@@ -1,6 +1,5 @@
 #!env luajit
 require "ccrypt"
---local dump=require "dump"
 local getopt = require"posix.unistd".getopt
 
 local decrypt,rails=false,2

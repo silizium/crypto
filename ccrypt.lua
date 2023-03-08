@@ -1,5 +1,7 @@
 -- ccrypt.lua
 require "stable_sort"
+local dump=require "dump"
+
 ccrypt={}
 ccrypt.Unicode="[%z\1-\127\194-\244][\128-\191]*"
 local Unicode="("..ccrypt.Unicode..")"
@@ -467,7 +469,7 @@ function codebook.load(file)
 	local tab={}
 	for c,w in text:gmatch("(%S+)%s+(%C+)\n") do
 		if w=="<SPC>" then w=" " end
-		if c and w then tab[#tab+1]={c,w} end
+		if c and w then tab[#tab+1]={code=c,clear=w} end
 	end
 	return tab
 end
@@ -475,15 +477,18 @@ end
 function codebook.figlet(book)
 	local fig,let
 	for _,v in ipairs(book) do
-		if v[2]=="<FIG>" then fig=v[1] 
-		elseif v[2]=="<LET>" then let=v[1]
+		if v.clear=="<FIG>" then fig=v.code
+		elseif v.clear=="<LET>" then let=v.code
 		end
 	end
 	return fig,let
 end
 
 function string.codebook_encode(text,book)
-	table.sort(book,function(a,b) return #a[2]>#b[2] or (#a[2]==#b[2] and #a[1]>#b[1]) end)
+	table.sort(book,function(a,b) 
+		return #a.clear>#b.clear or (#a.clear==#b.clear and #a.code>#b.code) 
+	end)
+--io.stderr:write(dump(book), "\n")
 	--for _,b in ipairs(book) do print(b[1], b[2]) end 
 	local enc={}
 	local fig,let=codebook.figlet(book)
@@ -492,17 +497,19 @@ function string.codebook_encode(text,book)
 	while i<=#text do
 		local word=""
 		for _,w in ipairs(book) do
-			if text:sub(i,i+#w[2]-1)==w[2] then
-				if w[2]:match("%d") and not figures then
+--io.stderr:write(w.code,"\t",w.clear,"\t",text:sub(i,i+#w.clear-1),"\t",tostring(w.clear==text:sub(i,i+#w.clear-1)),"\n")
+			if text:sub(i,i+#w.clear-1)==w.clear then
+
+				if w.clear:match("%d") and not figures then
 					word=fig
 					figures=true
 				end
-				if w[2]:match("%D") and figures then
+				if w.clear:match("%D") and figures then
 					word=let
 					figures=false
 				end
-				word=word..w[1]
-				i=i+#w[2]-1
+				word=word..w.code
+				i=i+#w.clear-1
 				break ::out::
 			end
 		end
@@ -514,7 +521,7 @@ function string.codebook_encode(text,book)
 end
 
 function string.codebook_decode(text,book)
-	table.sort(book,function(a,b) return #a[1]>#b[1] or (#a[1]==#b[1] and #a[2]>#b[2]) end)
+	table.sort(book,function(a,b) return #a.code>#b.code or (#a.code==#b.code and #a.clear>#b.clear) end)
 	--for _,b in ipairs(book) do print(b[1], b[2]) end 
 	local dec={}
 	local fig,let=codebook.figlet(book)
@@ -524,7 +531,7 @@ function string.codebook_decode(text,book)
 		local word=""
 		local code,clear
 		for _,w in ipairs(book) do
-			code,clear=w[1],w[2]
+			code,clear=w.code,w.clear
 			if text:sub(i,i+#code-1)==code then
 				if code==fig then figures=true  i=i+1 goto out end
 				if code==let then figures=false i=i+1 goto out end
