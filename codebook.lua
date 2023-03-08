@@ -36,6 +36,7 @@ for r, optarg, optind in getopt(arg, "b:dh") do
 end
 
 local text=io.read("*a"):upper():umlauts()
+text=text:gsub("%s","")
 local book=codebook.load(bookname)
 local code
 if not decrypt then
