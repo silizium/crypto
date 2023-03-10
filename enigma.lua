@@ -148,7 +148,9 @@ function help()
 			"\t  UKW A=old,B=M3B, C=M3C, D=M4B, E=M4C, Reichsbahn, Schweiz, Abwehr\n"..
 			"\t  Walzen 1-8 B=beta G=Gamma\n"..
 			"\t  Stator 1=standard, 2=Reichsbahn, Schweiz, Abwehr, 3=Enigma D\n"..
-			"\t  Stecker in form AE-OU-CH etc.\n")
+			"\t  Stecker in form AE-OU-CH etc.\n"..
+			"\t  -e english numbers\n"..
+			"\t  -v verbose\n")
 		os.exit()
 end
 function buildsubst(code)

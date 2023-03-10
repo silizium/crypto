@@ -24,6 +24,7 @@ local fopt={
 			.."use: %s\n"
 			.."-h	print this help text\n"
 			.."-a	alphabet (%s) %d\n"
+			.."-w	write out alphabet to /dev/stderr\n"
 			.."-p	passwort (%s)\n"
 			.."-r	reverse alphabet\n"
 			.."-t	column transpose (%s)\n"
@@ -33,7 +34,7 @@ local fopt={
 		os.exit(EXIT_FAILURE)
 	end,
 	["a"]=function(optarg, optind)
-		alphabet=tonumber(optarg:upper():umlauts())
+		alphabet=optarg:upper():umlauts()
 	end,
 	["p"]=function(optarg, optind)
 		password=optarg:upper():umlauts():remove_doublets()
@@ -42,6 +43,9 @@ local fopt={
 	end,
 	["r"]=function(optarg, optind)
 		alphabet=alphabet:reverse()
+	end,
+	["w"]=function(optarg, optind)
+		io.stderr:write(alphabet,"\n")
 	end,
 	["t"]=function(optarg, optind)
 		column=optarg:upper():umlauts()
@@ -62,7 +66,7 @@ local fopt={
 	end,
 }
 -- quickly process options
-for r, optarg, optind in getopt(arg, "a:p:s:t:rh") do
+for r, optarg, optind in getopt(arg, "a:p:s:t:rwh") do
 	last_index = optind
 	if fopt[r](optarg, optind) then break end
 end
