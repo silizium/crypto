@@ -140,8 +140,10 @@ function string.subst_table(alphabet, cipher, key)
 	local s,e
 	for a in alphabet:utf8all() do
 		s,e = cipher:find(Unicode, s)
-		substitution[a]=cipher:sub(s,e)
-		s=e+1
+		if s and e then 
+			substitution[a]=cipher:sub(s,e)
+			s=e+1
+		end
 	end
 	return substitution
 end
