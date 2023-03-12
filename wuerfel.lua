@@ -37,6 +37,8 @@ for r, optarg, optind in getopt(arg, "p:rdh") do
 	last_index = optind
 	if fopt[r](optarg, optind) then break end
 end
+if arg[last_index] then password=arg[last_index]:upper():umlauts() end
+
 
 local text=io.read("*a"):upper():umlauts()
 text=text:gsub("[^%w]", "")
