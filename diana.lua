@@ -17,9 +17,10 @@ local fopt={
 	["h"]=function(optarg,optind) 
 		io.stderr:write(
 			string.format(
-			"Diana cipher from Vietnam War era (CC)2023 H.Behrens DL7HH\n"
+			"Diana cipher/OTP from Vietnam War era (CC)2023 H.Behrens DL7HH\n"
 			.."use: %s\n"
 			.."-h	print this help text\n"
+			.."-f	filename\n"
 			.."-p	password (%s)\n",
 			arg[0], password)
 		)	
@@ -29,13 +30,20 @@ local fopt={
 		password=optarg:upper():umlauts()
 		password=password:gsub("[%A]","") -- filter valid characters
 	end,
+	["f"]=function(optarg, optind)
+		local fp=assert(io.open(optarg))
+		password=fp:read("*a")
+		fp:close()
+		password=password:upper():umlauts()
+		password=password:gsub("[%A]","") -- filter valid characters
+	end,
 	["?"]=function(optarg, optind)
 		io.stderr:write(string.format("unrecognized option %s\n", arg[optind -1]))
 		return true
 	end,
 }
 -- quickly process options
-for r, optarg, optind in getopt(arg, "p:h") do
+for r, optarg, optind in getopt(arg, "f:p:h") do
 	last_index = optind
 	if fopt[r](optarg, optind) then break end
 end
