@@ -19,8 +19,9 @@ function string.diana(text, password)
 	v={text:byte(1,#text)}
 	p={password:byte(1,#text)}
 	t={}
+	a=string.byte("A")
 	for i=1,#v do 
-		t[i]=string.char((26-(v[i]+p[1+(i-1)%#password]))%26+string.byte("A"))
+		t[i]=string.char(25-(v[i]+p[1+(i-1)%#password])%26+a)
 	end
 	return table.concat(t)
 end
