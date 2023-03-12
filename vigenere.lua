@@ -63,13 +63,15 @@ local fopt={
 	end,
 	["r"]=function(optarg, optind)
 		randomize=optarg
+		local seed
 		if optarg=="time" then
-			math.randomseed(os.time()^5+os.clock())
+			seed=os.time()^5+os.clock()
 		else
-			math.randomseed(tonumber(optarg))
+			seed=tonumber(optarg)
 		end
+		math.randomseed(seed)
 		alphabet=alphabet:shuffle()
-		io.stderr:write("random alphabet: ",alphabet,"\n")
+		io.stderr:write("random alphabet: ",alphabet," seed:",seed,"\n")
 	end,
 	["d"]=function(optarg, optind)
 		decrypt=true
