@@ -1,6 +1,19 @@
 #!env luajit
+-- echo secretmessage|./diana.lua -p FUDEE -f otp-codes/alpha_donotuse.txt |block
 require "ccrypt"
 local getopt = require"posix.unistd".getopt
+function loadotp(file,start)
+	file=file or "otp-code/alpha_donotuse.txt"
+	local fp=io.open(file)
+	if not fp then return nil end
+	local text=fp:read("*a")
+	fp:close()
+	if start then 
+		local s,e=text:find(start)
+		if s then text=text:sub(e+1,-1) end
+	end
+	return text:upper():umlauts()
+end
 
 function string.diana(text, password)
 	v={text:byte(1,#text)}
@@ -12,7 +25,7 @@ function string.diana(text, password)
 	return table.concat(t)
 end
 
-local password="SECRET"
+local password=nil
 local fopt={
 	["h"]=function(optarg,optind) 
 		io.stderr:write(
@@ -31,11 +44,9 @@ local fopt={
 		password=password:gsub("[%A]","") -- filter valid characters
 	end,
 	["f"]=function(optarg, optind)
-		local fp=assert(io.open(optarg))
-		password=fp:read("*a")
-		fp:close()
-		password=password:upper():umlauts()
-		password=password:gsub("[%A]","") -- filter valid characters
+		local otp=loadotp(optarg, password)
+		if password then io.write(password) end
+		password=otp:gsub("[%A]","") -- filter valid characters
 	end,
 	["?"]=function(optarg, optind)
 		io.stderr:write(string.format("unrecognized option %s\n", arg[optind -1]))
