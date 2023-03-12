@@ -12,9 +12,9 @@ local fopt={
 			.."use: %s\n"
 			.."-h	print this help text\n"
 			.."-p	password (%s)\n"
-			.."-r	rows (%s)\n"
+			.."-r	row transposition (%s)\n"
 			.."-d	decrypt (%s)\n",
-			arg[0], alphabet, matrix, password, row, decrypt)
+			arg[0], password, tostring(rows), tostring(decrypt))
 		)	
 		os.exit(EXIT_FAILURE)
 	end,
