@@ -1,7 +1,42 @@
-local f={
-
-}
 local codebook={
+figlet=function()
+end,
+encode=function(text)
+	table.sort(book,function(a,b) 
+		return #a.clear>#b.clear or (#a.clear==#b.clear and #a.code>#b.code) 
+	end)
+	local enc={}
+	local fig,let=codebook.figlet(book)
+	local figures=false
+	local i=1
+	while i<=#text do
+		local word=""
+		for _,w in ipairs(book) do
+			if text:sub(i,i+#w.clear-1)==w.clear then
+
+				if w.clear:match("%d") and not figures then
+					word=fig
+					figures=true
+				end
+				if w.clear:match("%D") and figures then
+					word=let
+					figures=false
+				end
+				word=word..w.code
+				i=i+#w.clear-1
+				break ::out::
+			end
+		end
+		::out::
+		enc[#enc+1]=word
+		i=i+1
+	end
+	return table.concat(enc)
+end,
+decode=function(text)
+end,
+
+	book={
 	{ code="A", clear="A"},
 	{ code="E", clear="E"},
 	{ code="N", clear="N"},
@@ -54,5 +89,10 @@ local codebook={
 	{ code="XW", clear="SICH"},
 	{ code="XY", clear="AUCH"},
 	{ code="XZ", clear="NACH"},
+
+	-- Enemy reports
+	{ code="ccgg ${POS}", clear="Feind steht %W+"}
+
+	} -- End book
 }
 return codebook

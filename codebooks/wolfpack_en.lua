@@ -1,4 +1,8 @@
 local f={
+	encode=function()
+	end,
+	decode=function()
+	end,
 
 }
 local codebook={
@@ -54,5 +58,8 @@ local codebook={
 	{ code="XW", clear="OFT"},
 	{ code="XY", clear="STH"},
 	{ code="XZ", clear="MEN"},
+
+	-- Enemy reports
+	{ code="ccgg ${POS}", clear="Enemy at %W+"}
 }
 return codebook

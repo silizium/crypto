@@ -34,7 +34,7 @@ local fopt={
 		os.exit(EXIT_FAILURE)
 	end,
 	["a"]=function(optarg, optind)
-		alphabet=optarg:upper():umlauts()
+		alphabet=optarg:upper():umlauts():remove_doublets()
 	end,
 	["p"]=function(optarg, optind)
 		password=optarg:upper():umlauts():remove_doublets()
