@@ -22,6 +22,8 @@ local code={
 	["CH"]="DADADADAH", ["-"]="DADIDIDIDIDAH", ["("]="DADIDADADIT", [")"]="DADIDADADIDAH",
 	[":"]="DADADADIDIDIT",
 	["<KA>"]="DADIDADIDAH", ["<VE>"]="DIDIDIDADIT", ["<SK>"]="DIDIDIDADIDAH",
+	["&"]="DIDADIDIDIT", ["_"]="DIDIDADADIDA", ["$"]="DIDIDADIDIDA",
+	["Ç"]="DADIDADIDIT", ["Ň"]="DADADIDADA",
 	["<SOS>"]="DIDIDIDADADADIDIDIT", ["<ERR>"]="DIDIDIDIDIDIDIDIT"
 }
 
@@ -57,7 +59,7 @@ for r, optarg, optind in getopt(arg, "m:dh") do
 end
 
 local txt=io.read("*a"):upper()
-txt=txt:substitute(("äöüå"):subst_table("ÄÖÜÅ"))
+txt=txt:substitute(("äöüåňç"):subst_table("ÄÖÜÅŇÇ"))
 
 local t={}
 if not decode then
