@@ -91,7 +91,7 @@ end,
 	{ code="XZ", clear="NACH"},
 
 	-- Enemy reports
-	{ code="ccgg ${POS}", clear="Feind steht %W+"}
+	{ code="CCGG${POS}", clear="FEIND STEHT %W+"}
 
 	} -- End book
 }
