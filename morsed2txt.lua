@@ -19,7 +19,7 @@ local code={
 	["4"]="ddddD", ["5"]="ddddd", ["6"]="Ddddd", ["7"]="DDddd", 
 	["8"]="DDDdd", ["9"]="DDDDd",
 	["Å"]="dDDdD", ["É"]="ddDdd", ["È"]="dDddD",
-	["C"]="DDDD", ["-"]="DddddD", ["("]="DdDDd", [")"]="DdDDdD",
+	["CH"]="DDDD", ["-"]="DddddD", ["("]="DdDDd", [")"]="DdDDdD",
 	[":"]="DDDddd",
 	["<KA>"]="DdDdD", ["<VE>"]="dddDd", ["<SK>"]="dddDdD",
 	["&"]="dDddd", ["_"]="ddDDdD", ["$"]="ddDddD",
