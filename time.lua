@@ -4,4 +4,12 @@ local now=os.date("*t")
 now.hour,now.min,now.sec=arg[1]:match("(%d*)[:]?(%d*)[:]?(%d*)")
 --print(now.hour, now.min, now.sec)
 diff=os.difftime(os.time(now),os.time()) 
-repeat io.write(os.date("%H:%M",os.time()+diff)) io.read("*l") until false
+repeat 
+	local stamp=os.date("%H:%M",os.time()+diff)
+	local f=assert(io.popen("xsel --clipboard --input", "w"))
+		f:write(stamp)
+	f:close()
+	io.write(stamp) 
+	io.read("*l") 
+until false
+
