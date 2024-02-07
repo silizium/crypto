@@ -535,7 +535,7 @@ function string.codebook_decode(text,book)
 		for _,w in ipairs(book) do
 			code,clear=w.code,w.clear
 			if text:sub(i,i+#code-1)==code then
-				if code==fig then figures=true  i=i+1 goto out end
+				if code==fig then figures=not figures i=i+1 goto out end
 				if code==let then figures=false i=i+1 goto out end
 				if clear:match("%d") and not figures then
 					goto cont
