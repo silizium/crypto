@@ -8,12 +8,12 @@ local fopt={
         ["h"]=function(optarg,optind) 
                 io.stderr:write(
                         string.format(
-                        "smiley (CC)2024 H.Behrens DL7HH\n"
+                        "achmed code (CC)2024 H.Behrens DL7HH\n"
                         .."use: %s\n"
                         .."-h   print this help text\n"
                         .."-d   decode\n"
                         .."-r   randomseed (%u)\n"
-						.."\tinput as ADFGVX does the OwO code\n",
+						.."\t input as ADFGVX does a Achmed the dead terrorist-code\n",
                         arg[0], seed)
                 )
                 os.exit(EXIT_FAILURE)
@@ -47,7 +47,7 @@ end
 
 local text=io.read("*a")
 local alphabet="ADFGVX"
-local owo={"OwO", "~w~", "UwU", "QwQ", ">w<", "@w@"}
+local owo={":bomb:", ":girl:", ":star_and_crescent:", ":skull:", ":fire:", ":scream:"}
 
 local enc_key,encrypted={}
 local i=1
@@ -58,11 +58,11 @@ for c in alphabet:utf8all() do
 	if decode then
 		enc_key[s]=c
 	else
-		enc_key[c]=s.." "
+		enc_key[c]=s
 	end
 end
 if decode then
-	encrypted=text:substitute(enc_key, ".w.")
+	encrypted=text:substitute(enc_key, ":[a-z0-9_]+:")
 else
 	encrypted=text:substitute(enc_key)
 end
