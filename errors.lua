@@ -1,4 +1,4 @@
-#!env luajit
+#!/usr/bin/env luajit
 -- inserts random errors into a "codegroup" transmission
 -- echo This is a test.|codegroup|./errors.lua|codegroup -d
 local err=arg[1] and arg[1] or 3

@@ -1,4 +1,4 @@
-#!env luajit
+#!/usr/bin/env luajit
 -- echo -n "mission begins at dawn.travel to coordinates:30uxc55106318."|./otp.lua|block 5 15
 -- https://www.youtube.com/watch?v=MzwpmbIWUNc
 require"ccrypt"

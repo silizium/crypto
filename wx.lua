@@ -1,4 +1,4 @@
-#!env luajit
+#!/usr/bin/env luajit
 --[[
 	read actual WX report and generate a report
 	in telegraphy

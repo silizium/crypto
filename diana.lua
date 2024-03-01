@@ -1,4 +1,4 @@
-#!env luajit
+#!/usr/bin/env luajit
 -- echo secretmessage|./diana.lua -p FUDEE -f otp-codes/alpha_donotuse.txt |block
 require "ccrypt"
 local getopt = require"posix.unistd".getopt

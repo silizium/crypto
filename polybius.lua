@@ -1,4 +1,4 @@
-#!env luajit
+#!/usr/bin/env luajit
 require "ccrypt"
 local getopt = require"posix.unistd".getopt
 

@@ -1,4 +1,4 @@
-#!env luajit
+#!/usr/bin/env luajit
 --hill cipher
 require"ccrypt"
 local key,decrypt,english="GYBNQKURP",false,false

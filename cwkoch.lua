@@ -1,4 +1,4 @@
-#!env luajit
+#!/usr/bin/env luajit
 --[[
 	cwkoch is a small koch trainer for cw/telegraphy learning
 	it needs the ccrypt library, the luaposix library and the 
@@ -15,16 +15,16 @@ local getopt = require"posix.unistd".getopt
 local cc = require"ccrypt"
 math.randomseed(os.time()^5*os.clock())
 --               1         11        21        31        41        51         60
-local alphabet={"elv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-@:;!_+()'\"AOUZKVTES", --koch
-                "kmuresnaptlwi.jz=foy,vg5/q92h38b?47c1d60x-AOUZE+@:;!_()'\"KVTS", --lcwo
-				"teanois14rhdl25ucmw36?fypg79/bvkj80=xqz.,-AOUZE+@:;!_()'\"KVTS", --m32
-				"adgxvel0qst2co5/ir9f4nu7h,=.bkp3myjwz168?-@:;!_+()'\"AOUZKVTES", --adgvx
+local alphabet={"elv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-@:;!_+()'\"AOUZHKVTES", --koch
+                "kmuresnaptlwi.jz=foy,vg5/q92h38b?47c1d60x-AOUZHE+@:;!_()'\"KVTS", --lcwo
+				"teanois14rhdl25ucmw36?fypg79/bvkj80=xqz.,-AOUZHE+@:;!_()'\"KVTS", --m32
+				"adgxvel0qst2co5/ir9f4nu7h,=.bkp3myjwz168?-@:;!_+()'\"AOUZHKVTES", --adgvx
 }
 local amethod={"Koch/E13", "LCWO", "M32", "ADGVX"}
 local prefix="vvv[ka]"
 local postfix="+"
 local special={["K"]="[ka]", ["V"]="[ve]", ["T"]="[sk]", ["S"]="[sos]", ["E"]="[hh]",
-	["A"]="[aa]", ["O"]="[oe]", ["U"]="[ut]", ["Z"]="[sz]"}
+	["A"]="[aa]", ["O"]="[oe]", ["U"]="[ut]", ["Z"]="[sz]", ["H"]="[ot]"}
 local method=1
 local choice,percent,number,koch, block, newline, gap=100,true,50,#alphabet[method],5,5,0
 local fopt={

@@ -1,4 +1,4 @@
-#!env luajit
+#!/usr/bin/env luajit
 require"lpeg"
 local C, Ct, R, Cf, Cc = lpeg.C, lpeg.Ct, lpeg.R, lpeg.Cf, lpeg.Cc
 astable = Ct(C(1)^0)

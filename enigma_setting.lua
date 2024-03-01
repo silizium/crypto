@@ -1,4 +1,4 @@
-#!env luajit
+#!/usr/bin/env luajit
 #Enigma Daily Settings / Code Book Generator - www.101computing.net/enigma-daily-settings-generator/
 from random import randint
 
