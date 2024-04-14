@@ -1,6 +1,6 @@
 #!/usr/bin/env luajit
 -- convert ascii to numbers
-
+require"ccrypt"
 local getopt = require"posix.unistd".getopt
 local decode,seed=false,os.time()^5*os.clock()
 math.randomseed(seed)
@@ -31,11 +31,11 @@ for r, optarg, optind in getopt(arg, "dh") do
         if fopt[r](optarg, optind) then break end
 end
 
-txt=io.read("a*"):upper()
+txt=io.read("a*"):upper():umlauts()
 if decode then
 	for c,o in txt:gmatch("(%d+)(%D+)") do 
 		io.write(string.char(tonumber(c)+string.byte("A")-1))
-		if o~=nil then
+		if o~=nil and o~="" then
 			o=o:gsub("%s","")
 			io.write(o)
 		end
@@ -45,7 +45,7 @@ else
 		if c:match("%a") then
 			io.write(string.byte(c)-string.byte("A")+1, " ") 
 		else
-			io.write(c)
+			io.write(c, " ")
 		end
 	end
 end
