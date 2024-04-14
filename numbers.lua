@@ -33,8 +33,12 @@ end
 
 txt=io.read("a*"):upper()
 if decode then
-	for c in txt:gmatch("%d+") do 
-		io.write(string.char(tonumber(c)+string.byte("A")-1)) 
+	for c,o in txt:gmatch("(%d+)(%D+)") do 
+		io.write(string.char(tonumber(c)+string.byte("A")-1))
+		if o~=nil then
+			o=o:gsub("%s","")
+			io.write(o)
+		end
 	end
 else 
 	for c in txt:gmatch("%g") do
