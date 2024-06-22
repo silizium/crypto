@@ -18,7 +18,7 @@ math.randomseed(os.time()^5*os.clock())
 local alphabet={"elv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-@:;!_+()'\"AOUZHKVTES", --koch
                 "kmuresnaptlwi.jz=foy,vg5/q92h38b?47c1d60x-AOUZHE+@:;!_()'\"KVTS", --lcwo
 				"teanois14rhdl25ucmw36?fypg79/bvkj80=xqz.,-AOUZHE+@:;!_()'\"KVTS", --m32
-				"adgxvel0qst2co5/ir9f4nu7h,=.bkp3myjwz168?-@:;!_+()'\"AOUZHKVTES", --adgvx
+				"adfgxvel0qst2co5/ir94nu7h,=.bkp3myjwz168?-@:;!_+()'\"AOUZHKVTES", --adfgvx
 }
 local amethod={"Koch/E13", "LCWO", "M32", "ADGVX"}
 local prefix="vvv[ka]"
@@ -109,6 +109,6 @@ for i=1,number do
 end
 t=table.concat(t):block(block,(newline or 0)*(block or 0))
 t=t:gsub(".",special):upper()
---if newline and newline>0 then t=t:gsub("("..("[^ ]+%s+"):rep(newline)..")","%1\n") end
+if newline and newline>0 then t=t:gsub("("..("[^ ]+%s+"):rep(newline)..")","%1\n") end
 t=(#prefix>0 and prefix.."\n" or "")..t..(#postfix>0 and postfix.."\n" or "")
 io.write(t)
