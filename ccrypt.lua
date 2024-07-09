@@ -469,7 +469,9 @@ function codebook.load(file)
 	fp:close()
 	text=text:upper():umlauts()
 	local tab={}
-	for c,w in text:gmatch("(%S+)%s+(%C+)\n") do
+	local c,w
+	for line in text:gmatch("([^\n]*)\n?") do 
+		c,w = line:match("^(%S+)%s+(%C+)") 
 		if w=="<SPC>" then w=" " end
 		if c and w then tab[#tab+1]={code=c,clear=w} end
 	end
