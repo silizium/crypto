@@ -465,16 +465,16 @@ codebook={}
 function codebook.load(file)
 	file=file or "otp-book.txt"
 	local fp=assert(io.open(file))
-	local text=fp:read("*a")
-	fp:close()
-	text=text:upper():umlauts()
+--	local text=fp:read("*a")
 	local tab={}
 	local c,w
-	for line in text:gmatch("([^\n]*)\n?") do 
+	for line in fp:lines() do 
+		line=line:upper():umlauts()
 		c,w = line:match("^(%S+)%s+(%C+)") 
 		if w=="<SPC>" then w=" " end
 		if c and w then tab[#tab+1]={code=c,clear=w} end
 	end
+	fp:close()
 	return tab
 end
 
