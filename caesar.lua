@@ -7,7 +7,7 @@ local key=arg[1] and tonumber(arg[1]) or 13
 local text=io.read("*a") -- STDIN einlesen
 local alphabet=arg[2]~=null and arg[2] or "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 -- wir wandeln erstmal unseren Text in Großbuchstaben
-text=text:upper()
+text=text:clean("english")
 -- auch die Sonderzeichen 
 local toupper_tab=("äöü"):subst_table("ÄÖÜ")
 text=text:substitute(toupper_tab)
