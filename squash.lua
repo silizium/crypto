@@ -49,6 +49,7 @@ local text=io.read"*a":upper():filter("[%c]+")
 if arg[1]~="-d" then
 	text=text:morse()
 else
+	text=text:filter("[^01]+")
 	text=text:imorse()
 end
 print(text)
