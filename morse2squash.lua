@@ -1,6 +1,7 @@
 #!/usr/bin/env luajit
 require"ccrypt"
--- ternery code space 0 dot 1 dash 2
+-- https://de.wikipedia.org/wiki/Kurier_(Verfahren)
+-- 10 dit 110 dah 00 character 000 word
 local morse={
 	[" "]="0", 		["A"]="1011",		["B"]="11010101",	["C"]="110101101",	["D"]="110101",	
 	["E"]="1",		["F"]="10101101",	["G"]="1101101",	["H"]="1010101",	["I"]="101",	

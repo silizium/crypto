@@ -7,9 +7,16 @@ ccrypt.Unicode="[%z\1-\127\194-\244][\128-\191]*"
 local Unicode="("..ccrypt.Unicode..")"
 local rshift,lshift,band=bit.rshift,bit.lshift,bit.band
 
+function string.utf8all(text)
+	return text:gmatch(Unicode)
+end
+function string.utf8len(str)
+	return select(2, str:gsub(Unicode, ""))
+end
+
 function dec2bin(num, bits, symb)
 	local Unicode="([%z\1-\127\194-\244][\128-\191]*)"
-	bits=bits or 32
+	bits=bits or 8
 	symb=symb or "○●"
 	res={}
 	local test=lshift(1,bits-1)
@@ -23,13 +30,16 @@ function dec2bin(num, bits, symb)
 	end
 	return table.concat(res)
 end
-
-function string.utf8all(text)
-	return text:gmatch(Unicode)
-end
-
-function string.utf8len(str)
-	return select(2, str:gsub(Unicode, ""))
+function bin2dec(txt, bits, symb)
+	bits=bits or 8
+	symb=symb or "○●"
+	local res=0
+	txt=txt:gsub("[^"..symb.."]+","")
+	for c in txt:utf8all() do
+		res=lshift(res,1)
+		res=res+(c==symb:match(Unicode,2) and 1 or 0)
+	end
+	return string.char(res)
 end
 
 function string.genpat(word, known)

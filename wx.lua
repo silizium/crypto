@@ -37,6 +37,20 @@ https://de.wikipedia.org/wiki/METAR
  EDDH 250720Z AUTO 22008KT 9999 SCT012 OVC019 13/12 Q1011 NOSIG
  2023/02/03 07:50
  EDDH 030750Z AUTO 27020G31KT 250V310 7000 -RA BKN009 OVC014 08/07 Q1011 RERA BECMG SCT009
+ EDDH 261920Z AUTO 20011KT CAVOK 16/14 Q0990 TEMPO SHRA SCT030CB
+Station       : EDDH
+Day           : 26
+Time          : 19:20 UTC
+Wind direction: 200 (SSW)
+Wind speed    : 11 KT
+Wind gust     : 11 KT
+Visibility    : 0 
+Temperature   : 16 C
+Dewpoint      : 14 C   (Hygro 85%)
+Pressure      : 990 hPa
+Clouds        : 
+Phenomena     : Ceiling and visibility OK
+                Showers Rain
 ]]--
 fp:close()
 local wx={}
