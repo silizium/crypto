@@ -150,7 +150,7 @@ function string.subst_table(alphabet, cipher, key)
 	local s,e
 	for a in alphabet:utf8all() do
 		s,e = cipher:find(Unicode, s)
-		if s and e then 
+		if s and e and not substitution[a] then 
 			substitution[a]=cipher:sub(s,e)
 			s=e+1
 		end
@@ -163,6 +163,24 @@ function string.substitute(text, sub_table, pattern)
 	pattern = pattern or Unicode
 	return (string.gsub(text, pattern, sub_table))
 end
+
+function string.reduce(text, chars, pattern)
+	pattern = pattern or Unicode
+	local rtab={}
+	if chars<=26 then 
+		local enc_key={}
+		enc_key.ß="SZ" enc_key.Ä="AE" enc_key.Ö="OE" enc_key.Ü="UE" enc_key.Å="AO"
+		text=text:substitute(enc_key)
+	end
+	if chars<=25 then rtab["J"]="I" end
+	if chars<=24 then rtab["U"]="V" end
+	if chars<=23 then rtab["W"]="VV" end
+	if chars<=22 then rtab["X"]="CS" end
+	if chars<=21 then rtab["Y"]="I" end
+	if chars<=20 then rtab["K"]="C" end
+	return (string.gsub(text, pattern, rtab))
+end
+
 function string:clean(english)
 	-- wir wandeln erstmal unseren Text in Großbuchstaben
 	self=self:upper()
