@@ -45,7 +45,7 @@ local fopt={
 			.."-g	gap (%d)\n"
 			.."\n	Default alphabets (-m):\n",
 			arg[0],alphabet[method]:sub(1,koch), koch, choice, percent and "%" or "", 
-			method, amethod[method],number,blk,newline or 5,prefix,postfix,gap)
+			method, amethod[method],number,blk,newline,prefix,postfix,gap)
 		)
 		for i=1,#alphabet do
 			io.stderr:write(
@@ -75,7 +75,7 @@ local fopt={
 		number=tonumber(optarg)
 	end,
 	["b"]=function(optarg, optind)
-		blk,newline=optarg:match("(%d+),*(%d*)")
+		blk,newline=optarg:match("(%d+),(%-?%d*)")
 		blk,newline=tonumber(blk),tonumber(newline)
 	end,
 	["p"]=function(optarg, optind)
