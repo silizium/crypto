@@ -26,7 +26,7 @@ local postfix="+"
 local special={["K"]="[ka]", ["V"]="[ve]", ["T"]="[sk]", ["S"]="[sos]", ["E"]="[hh]",
 	["A"]="[aa]", ["O"]="[oe]", ["U"]="[ut]", ["Z"]="[sz]", ["H"]="[ot]"}
 local method=1
-local choice,percent,number,koch, block, newline, gap=100,true,50,#alphabet[method],5,5,0
+local choice,percent,number,koch, blk, newline, gap=100,true,50,#alphabet[method],5,5,0
 local fopt={
 	["h"]=function(optarg,optind) 
 		io.stderr:write(
@@ -45,7 +45,7 @@ local fopt={
 			.."-g	gap (%d)\n"
 			.."\n	Default alphabets (-m):\n",
 			arg[0],alphabet[method]:sub(1,koch), koch, choice, percent and "%" or "", 
-			method, amethod[method],number,block,newline or 5,prefix,postfix,gap)
+			method, amethod[method],number,blk,newline or 5,prefix,postfix,gap)
 		)
 		for i=1,#alphabet do
 			io.stderr:write(
@@ -75,8 +75,8 @@ local fopt={
 		number=tonumber(optarg)
 	end,
 	["b"]=function(optarg, optind)
-		block,newline=optarg:match("(%d+),*(%d*)")
-		block,newline=tonumber(block),tonumber(newline)
+		blk,newline=optarg:match("(%d+),*(%d*)")
+		blk,newline=tonumber(blk),tonumber(newline)
 	end,
 	["p"]=function(optarg, optind)
 		prefix=optarg
@@ -107,8 +107,8 @@ for i=1,number do
 	rnd=math.random(1,#alphabet)
   	t[#t+1]=alphabet:sub(rnd,rnd)
 end
-t=table.concat(t):block(block,(newline or 0)*(block or 0))
+t=table.concat(t):block(blk,newline)
 t=t:gsub(".",special):upper()
-if newline and newline>0 then t=t:gsub("("..("[^ ]+%s+"):rep(newline)..")","%1\n") end
+--if newline and newline>0 then t=t:gsub("("..("[^ ]+%s+"):rep(newline)..")","%1\n") end
 t=(#prefix>0 and prefix.."\n" or "")..t..(#postfix>0 and postfix.."\n" or "")
 io.write(t)

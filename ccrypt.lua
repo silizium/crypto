@@ -94,18 +94,18 @@ function string.filter(input, pat, rep)
 	return (input:gsub(pat, rep))
 end
 
-function string.block(text, block, line)
-	local block = block or 5
-	local line = line or 5
+function string.block(text, blk, lf)
+	local blk = blk or 5
+	local lf = lf or 5
 	local len = 0
-	local output = text:gsub("("..ccrypt.Unicode:rep(block)..")", function(t) 
+	local output = text:gsub("("..ccrypt.Unicode:rep(blk)..")", function(t) 
 		len = len + 1
-		if line<0 then return t end
-		if len>=line then 
+		if lf<0 then return t end
+		if len<lf then 
+			t = t.." " 
+		else 
 			len=0
 			t = t.."\n"
-		else 
-			t = t.." " 
 		end
 		return t 
 	end)
