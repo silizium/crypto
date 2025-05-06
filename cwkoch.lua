@@ -76,7 +76,8 @@ local fopt={
 	end,
 	["b"]=function(optarg, optind)
 		blk,newline=optarg:match("(%d+),(%-?%d*)")
-		blk,newline=tonumber(blk),tonumber(newline)
+		blk=blk and tonumber(blk) or 5
+		newline=newline and tonumber(newline) or 5
 	end,
 	["p"]=function(optarg, optind)
 		prefix=optarg

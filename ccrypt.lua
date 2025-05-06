@@ -101,11 +101,12 @@ function string.block(text, blk, lf)
 	local output = text:gsub("("..ccrypt.Unicode:rep(blk)..")", function(t) 
 		len = len + 1
 		if lf<0 then return t end
+		if lf==0 then return t.." " end
 		if len<lf then 
 			t = t.." " 
 		else 
-			len=0
 			t = t.."\n"
+			len=0
 		end
 		return t 
 	end)
