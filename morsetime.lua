@@ -108,6 +108,6 @@ end
 io.write(file)
 
 printf("length in dits: %d\n", message)
-if wpm then printf("at %d wpm: %.1f secs\n", wpm, message*1.2/wpm) end
-if cpm then printf("at %d cpm: %.1f secs\n", cpm, message*1.2/(cpm/5)) end
+if wpm then printf("at %d wpm: %.1f secs/%.1f min\n", wpm, message*1.2/wpm, message*1.2/wpm/60) end
+if cpm then printf("at %d cpm: %.1f secs/%.1f min\n", cpm, message*1.2/(cpm/5), message*1.2/wpm/60) end
 
