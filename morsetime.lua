@@ -5,7 +5,7 @@ local getopt = require"posix.unistd".getopt
 local function printf(str, ...) return io.stderr:write(string.format(str, ...)) end
 
 local symbols={ ["<KA>"]="␂", ["<SK>"]="␂", ["<ERR>"]="␂", 
-	["<SOS>"]="␇", ["<VE>"]="␆" }
+	["<SOS>"]="␇", ["<VE>"]="␆", ["<AS>"]="␅" }
 
 local code={
 	[" "]=" ",
@@ -29,7 +29,7 @@ local code={
 	["␂"]="DdDdD", ["␆"]="dddDd", ["␂"]="dddDdD",
 	["&"]="dDddd", ["_"]="ddDDdD", ["$"]="ddDddD",
 	["Ç"]="DdDdd", ["Ñ"]="DDdDD",
-	["␇"]="dddDDDddd", ["␂"]="dddddddd"
+	["␇"]="dddDDDddd", ["␂"]="dddddddd", ["␅"]="dDddd"
 }
 
 local dit, dah, pause=1, 3, 7
