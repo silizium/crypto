@@ -96,8 +96,8 @@ end
 --	print(k,v)
 --end
 local file=io.read("*a"):upper()
-txt=file:gsub("<%a+>",symbols)
-txt=txt:substitute(("äöüåñç\r\n\t"):subst_table("ÄÖÜÅÑÇ   "))
+txt=file:substitute(("äöüåñç[]\r\n\t"):subst_table("ÄÖÜÅÑÇ<>   "))
+txt=txt:gsub("<%a+>",symbols)
 
 local message=0
 for c in txt:utf8all() do 
