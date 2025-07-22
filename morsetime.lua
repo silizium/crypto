@@ -99,10 +99,17 @@ local file=io.read("*a"):upper()
 txt=file:substitute(("äöüåñç[]\r\n\t"):subst_table("ÄÖÜÅÑÇ<>   "))
 txt=txt:gsub("<%a+>",symbols)
 
-local message=0
-for c in txt:utf8all() do 
-	local len=length[c]
-	message=message+len
+local message,compound=0,false
+for c in txt:utf8all() do
+	if 		c=="<" then compound=true
+	elseif  c==">" then 
+		compound=false 
+		message=message+2
+	else 
+		local len=length[c] 
+		if compound then len=len-2 end
+		message=message+len
+	end
 end
 
 io.write(file)
