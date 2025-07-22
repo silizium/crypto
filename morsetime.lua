@@ -76,9 +76,6 @@ for r, optarg, optind in getopt(arg, "w:c:d:D:p:h") do
 	if fopt[r](optarg, optind) then break end
 end
 
-
-
-
 local length={}
 -- build length table
 local p=0
@@ -96,7 +93,8 @@ end
 --	print(k,v)
 --end
 local file=io.read("*a"):upper()
-txt=file:substitute(("äöüåñç[]\r\n\t"):subst_table("ÄÖÜÅÑÇ<>   "))
+file=file:substitute(("äöüåñç"):subst_table("ÄÖÜÅÑÇ"))
+txt=file:substitute(("[]\r\n\t"):subst_table("<>   "))
 txt=txt:gsub("<%a+>",symbols)
 
 local message,compound=0,false
