@@ -26,7 +26,7 @@ function string.diana(text, password)
 	return table.concat(t)
 end
 
-local password=nil
+local password,clear=nil,false
 local fopt={
 	["h"]=function(optarg,optind) 
 		io.stderr:write(
