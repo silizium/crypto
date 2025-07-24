@@ -3,8 +3,8 @@
 require "ccrypt"
 local getopt = require"posix.unistd".getopt
 function loadotp(file,start)
-	file=file or "otp-code/alpha_donotuse.txt"
-	local fp=io.open(file)
+	file=file or "otp-codes/alpha_donotuse.txt"
+	local fp=assert(io.open(file))
 	if not fp then return nil end
 	local text=fp:read("*a"):upper()
 	fp:close()
@@ -27,6 +27,7 @@ function string.diana(text, password)
 end
 
 local password,start=nil,nil
+local file="otp-codes/alpha_donotuse.txt"
 local fopt={
 	["h"]=function(optarg,optind) 
 		io.stderr:write(
@@ -45,12 +46,7 @@ local fopt={
 		start=start:gsub("[%A]","") -- filter valid characters
 	end,
 	["f"]=function(optarg, optind)
-		if start then io.write(start) 
-		else
-			start=io.read(5)
-		end
-		local otp=loadotp(optarg, start)
-		password=otp:gsub("[%A]","") -- filter valid characters
+		file=optarg
 	end,
 	["?"]=function(optarg, optind)
 		io.stderr:write(string.format("unrecognized option %s\n", arg[optind -1]))
@@ -63,6 +59,13 @@ for r, optarg, optind in getopt(arg, "f:s:h") do
 	if fopt[r](optarg, optind) then break end
 end
 
+if start then io.write(start) 
+else
+	start=io.read(5)
+end
+local otp=loadotp(file, start)
+
+password=otp:gsub("[%A]","") -- filter valid characters
 local text=io.read("*a"):upper():umlauts()
 text=text:gsub("[%A]","") -- filter valid characters
 text=text:diana(password)
