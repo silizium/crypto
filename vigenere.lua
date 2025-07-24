@@ -16,10 +16,14 @@ function string.vigenere_encrypt(text,password,alphabet)
 	t=vigenere_make(password,alphabet)
 	-- encode vigenere
 	local r=0
-	for c in text:gmatch("%w") do
+	for c in text:gmatch(".") do
 		local from,to=alphabet:find(c)
-		v[#v+1]=t[r+1]:sub(from,from)
-		r=(r+1)%#password
+		if from then 
+			v[#v+1]=t[r+1]:sub(from,from) 
+			r=(r+1)%#password
+		else 
+			v[#v+1]=c
+		end
 	end
 	return table.concat(v)
 end
@@ -29,16 +33,20 @@ function string.vigenere_decrypt(text,password,alphabet)
 	t=vigenere_make(password,alphabet)
 	-- decode vigenere
 	local r=0
-	for c in text:gmatch("%w") do
+	for c in text:gmatch(".") do
 		local from,to=t[r+1]:find(c)
-		v[#v+1]=alphabet:sub(from,from)
-		r=(r+1)%#password
+		if from then
+			v[#v+1]=alphabet:sub(from,from)
+			r=(r+1)%#password
+		else
+			v[#v+1]=c
+		end
 	end
 	return table.concat(v)
 end
 
 local alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-local password,decrypt,randomize="SECRET",false,false
+local password,decrypt,randomize,clean="SECRET",false,false,true
 local fopt={
 	["h"]=function(optarg,optind) 
 		io.stderr:write(
@@ -49,6 +57,7 @@ local fopt={
 			.."-a	alphabet (%s) \n\taccepts all non spaces\n"
 			.."-p	password (%s) \n\taccepts all that are in alphabet\n"
 			.."-r	randomize (%s) \n\taccepts \"time\" or seed number\n"
+			.."-c	not clean text from non alphabet characters\n"
 			.."-d	decrypt (%s)\n",
 			arg[0], alphabet, password, randomize, decrypt)
 		)	
@@ -76,19 +85,24 @@ local fopt={
 	["d"]=function(optarg, optind)
 		decrypt=true
 	end,
+	["c"]=function(optarg, optind)
+		clean=not clean
+	end,
 	["?"]=function(optarg, optind)
 		io.stderr:write(string.format("unrecognized option %s\n", arg[optind -1]))
 		return true
 	end,
 }
 -- quickly process options
-for r, optarg, optind in getopt(arg, "a:p:r:dh") do
+for r, optarg, optind in getopt(arg, "a:p:r:cdh") do
 	last_index = optind
 	if fopt[r](optarg, optind) then break end
 end
 
 local text=io.read("*a"):upper():umlauts()
-text=text:gsub("[^"..alphabet.."]","") -- filter valid characters
+if clean then 
+	text=text:gsub("[^"..alphabet.."]","") -- filter valid characters
+end
 if not decrypt then
 	text=text:vigenere_encrypt(password,alphabet)
 else
