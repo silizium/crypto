@@ -13,7 +13,7 @@ function string.remove_doublets(text)
 	return table.concat(t)
 end
 
-local alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+local alphabet="abcdefghijklmnopqrstuvwxyz0123456789"
 local password, randomize="", ""
 local column
 local fopt={
@@ -24,6 +24,8 @@ local fopt={
 			.."use: %s\n"
 			.."-h	print this help text\n"
 			.."-a	alphabet (%s) %d\n"
+			.."-l	letters\n"
+			.."-n	numbers\n"
 			.."-w	write out alphabet to /dev/stderr\n"
 			.."-p	passwort (%s)\n"
 			.."-r	reverse alphabet\n"
@@ -35,6 +37,12 @@ local fopt={
 	end,
 	["a"]=function(optarg, optind)
 		alphabet=optarg:upper():umlauts():remove_doublets()
+	end,
+	["l"]=function(optarg, optind)
+		alphabet=alphabet:gsub("%A", "")
+	end,
+	["n"]=function(optarg, optind)
+		alphabet=alphabet:gsub("%D", "")
 	end,
 	["p"]=function(optarg, optind)
 		password=optarg:upper():umlauts():remove_doublets()
@@ -66,7 +74,7 @@ local fopt={
 	end,
 }
 -- quickly process options
-for r, optarg, optind in getopt(arg, "a:p:s:t:rwh") do
+for r, optarg, optind in getopt(arg, "a:p:s:t:lnrwh") do
 	last_index = optind
 	if fopt[r](optarg, optind) then break end
 end

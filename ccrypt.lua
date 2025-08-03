@@ -209,7 +209,7 @@ function string:clean(english)
 	--[[ Does cause invalid dechiffre but good idea
 		text=text:gsub("C[HK]", "Q")	-- CH und CK wurden als Q ersetzt
 	]]
-	self=self:gsub("[%c%s%p]+", "") -- alles außer normale Zeichen weglöschen
+	self=self:gsub("[%c%p]+", "") -- alles außer normale Zeichen weglöschen
 	return self
 end
 
