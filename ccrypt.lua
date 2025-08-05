@@ -686,13 +686,20 @@ setmetatable(Enigma, {
   end,})
 function Enigma.buildsubst(code)
 	-- "DE-HA-GI" -> {D="E", E="D", H="A", A="H", G="I", I="G"}
-	local steck={}
-	for c in ("ABCDEFGHIJKLMNOPQRSTUVWXYZ"):gmatch("%u") do
+	local steck,control={},{}
+	local alpha="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	for c in alpha:gmatch("%u") do
 		steck[c]=c
 	end
 	for c1,c2 in code:gmatch("(%u)(%u)") do
 		steck[c1]=c2
 		steck[c2]=c1
+		if not (control[c1] or control[c2]) then
+			control[c1]=true
+			control[c2]=true
+		else
+			error("Letter change used a second time "..c1.."-"..c2)
+		end
 	end
 	return steck
 end

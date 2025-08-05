@@ -105,8 +105,10 @@ for c in txt:utf8all() do
 		message=message+2
 	else 
 		local len=length[c] 
-		if compound then len=len-2 end
-		message=message+len
+		if len then
+			if compound then len=len-2 end
+			message=message+len
+		end
 	end
 end
 
