@@ -20,7 +20,7 @@ local alphabet={"elv0aqst2cod5/ir9gxf4nu7h,=.bkp3myjwz168?-@:;!_+()'\"AOUZHKVTES
 				"teanois14rhdl25ucmw36?fypg79/bvkj80=xqz.,-AOUZHE+@:;!_()'\"KVTS", --m32
 				"adfgxvel0qst2co5/ir94nu7h,=.bkp3myjwz168?-@:;!_+()'\"AOUZHKVTES", --adfgvx
 }
-local amethod={"Koch/E13", "LCWO", "M32", "ADGVX"}
+local amethod={"Koch/E13", "LCWO", "M32", "ADFGVX"}
 local prefix="vvv[ka]"
 local postfix="+"
 local special={["K"]="[ka]", ["V"]="[ve]", ["T"]="[sk]", ["S"]="[sos]", ["E"]="[hh]",
