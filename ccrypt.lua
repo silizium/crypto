@@ -698,7 +698,7 @@ function Enigma.buildsubst(code)
 			control[c1]=true
 			control[c2]=true
 		else
-			error("Letter change used a second time "..c1.."-"..c2)
+			error("FAILURE: letter exchange used a second time "..c1.."-"..c2)
 		end
 	end
 	return steck
