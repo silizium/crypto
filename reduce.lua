@@ -20,6 +20,7 @@ local fopt={
 			.."20: K to C original roman alphabet\n",
 			arg[0],nr)
 		)
+		os.exit(EXIT_FAILURE)
 	end,
 	["r"]=function(optarg, optind)
 		nr=tonumber(optarg)

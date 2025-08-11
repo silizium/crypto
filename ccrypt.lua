@@ -532,7 +532,6 @@ function string.codebook_encode(text,book)
 		for _,w in ipairs(book) do
 --io.stderr:write(w.code,"\t",w.clear,"\t",text:sub(i,i+#w.clear-1),"\t",tostring(w.clear==text:sub(i,i+#w.clear-1)),"\n")
 			if text:sub(i,i+#w.clear-1)==w.clear then
-
 				if w.clear:match("%d") and not figures then
 					word=fig
 					figures=true
@@ -543,7 +542,7 @@ function string.codebook_encode(text,book)
 				end
 				word=word..w.code
 				i=i+#w.clear-1
-				break ::out::
+				goto out
 			end
 		end
 		::out::
