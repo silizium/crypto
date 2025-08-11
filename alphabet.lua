@@ -2,18 +2,8 @@
 require "ccrypt"
 local getopt = require"posix.unistd".getopt
 
-function string.remove_doublets(text)
-	local t,set={},{}
-	for c in text:gmatch("%w") do
-		if not set[c] then
-			t[#t+1]=c
-			set[c]=true
-		end
-	end
-	return table.concat(t)
-end
 
-local alphabet="abcdefghijklmnopqrstuvwxyz0123456789"
+local alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 local password, randomize="", ""
 local column
 local fopt={

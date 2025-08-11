@@ -32,9 +32,9 @@ local fopt={
 		german=not german
 	end,
 	["a"]=function(optarg, optind)
-		alphabet=optarg
+		alphabet=optarg:upper():remove_doublets()
 		if not (#alphabet == 25 or #alphabet ==36) then 
-			error("***FAILURE -a: alphabet has to be 25 or 36 characters in size, but has "..#alphabet)
+			error("***FAILURE -a: alphabet has to be 25 or 36 characters in size, but has "..#alphabet.." - "..alphabet)
 		end
 	end,
 	["d"]=function(optarg, optind)

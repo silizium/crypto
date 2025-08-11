@@ -88,6 +88,17 @@ function string.genpat(word, known)
 	return table.concat(tab)
 end
 
+function string.remove_doublets(text)
+	local t,set={},{}
+	for c in text:gmatch("%w") do
+		if not set[c] then
+			t[#t+1]=c
+			set[c]=true
+		end
+	end
+	return table.concat(t)
+end
+
 function string.filter(input, pat, rep)
 	pat = pat or "[%s%p%c]+"
 	rep = rep or ""
