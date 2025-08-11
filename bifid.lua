@@ -58,38 +58,48 @@ if english then	text=text:clean("english") end
 if german then text=text:clean() end
 alphabet=alphabet:upper()
 if filter then text=text:gsub("[^"..alphabet.."]", "") end
---build the conversion table
+--calculate the conversion table size
 local square=math.sqrt(#alphabet)
-local cipher, cy, cx={},{},{}
-for c in text:gmatch("["..alphabet.."]") do
-	local pos=alphabet:find(c)
-	if pos then
-		cy[#cy+1]=math.floor((pos-1)/square)+1
-		cx[#cx+1]=(pos-1)%square+1
+local cipher
+-- convert text to number pairs
+local function text2numbers(text, alphabet)
+	local cy,cx={},{}
+	for c in text:gmatch("["..alphabet.."]") do
+		local pos=alphabet:find(c)
+		if pos then
+			cy[#cy+1]=math.floor((pos-1)/square)+1
+			cx[#cx+1]=(pos-1)%square+1
+		end
 	end
+	return table.concat(cy)..table.concat(cx)
 end
-cipher=table.concat(cy)..table.concat(cx)
-if decrypt then
+-- back to characters in pairs y/x
+local function numbers2text(cipher, alphabet)
+	tmp={}
+	for y,x in cipher:gmatch("(%d)(%d)") do
+		local pos=tonumber(y-1)*square+tonumber(x)
+		tmp[#tmp+1]=alphabet:sub(pos, pos)
+	end
+	return table.concat(tmp)
+end
+-- unshuffle numbers
+local function unshuffle(cipher)
 	local tmp={}
-	cipher=table.concat(cy)..table.concat(cx)
-	for i=1,#cy do
+	local len2=math.floor(#cipher/2)
+	for i=1,len2 do
 		tmp[#tmp+1]=cipher:sub(i,i)
-		tmp[#tmp+1]=cipher:sub(i+#cy,i+#cy)
+		tmp[#tmp+1]=cipher:sub(i+len2,i+len2)
 	end
 	cipher=table.concat(tmp)
 	tmp={}
-	local to=math.floor(#cipher/2) 
-	for i=1,to do
+	for i=1,len2 do
 		tmp[#tmp+1]=cipher:sub(i,i)
-		tmp[#tmp+1]=cipher:sub(i+to, i+to)
+		tmp[#tmp+1]=cipher:sub(i+len2, i+len2)
 	end
-	cipher=table.concat(tmp)
+	return table.concat(tmp)
 end
--- back to characters in pairs y/x
-citmp={}
-for y,x in cipher:gmatch("(%d)(%d)") do
-	local pos=tonumber(y-1)*square+tonumber(x)
-	citmp[#citmp+1]=alphabet:sub(pos, pos)
-end
-text=table.concat(citmp)
+
+cipher=text2numbers(text, alphabet)
+if decrypt then cipher=unshuffle(cipher) end
+text=numbers2text(cipher, alphabet)
 io.write(text) -- verschlüsselter Text

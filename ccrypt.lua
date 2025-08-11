@@ -1,6 +1,6 @@
 -- ccrypt.lua
 require "stable_sort"
-local dump=require "dump"
+--local dump=require "dump"
 
 ccrypt={}
 ccrypt.Unicode="[%z\1-\127\194-\244][\128-\191]*"
