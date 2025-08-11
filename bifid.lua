@@ -17,7 +17,8 @@ local fopt={
 			.."-e	english (%s)	translates numbers to English\n"
 			.."-g	german (%s)	translates numbers to German\n"
 			.."-a	alphabet (%s)\n"
-			.."-d	decrypt\n",
+			.."-d	decrypt\n\n"
+			.."	Example:\n	echo \"Der Agent heißt Jörg, und er ist 23 Jahre alt.\"| \\\n	./reduce.lua -r25|./bifid.lua -aSMBKUTHDOYLQFNZWRPEXCGVAI -g \\\n	|block|./bifid.lua -a SMBKUTHDOYLQFNZWRPEXCGVAI -g  -d|block\nDERAG ENTHE ISZTI OERGY UNDER\nISTZW EIDRE IIAHR EALTX \n",
 			arg[0], filter, english, german, alphabet, decrypt)
 		)	
 		os.exit(EXIT_FAILURE)
