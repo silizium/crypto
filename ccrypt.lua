@@ -1,6 +1,8 @@
 -- ccrypt.lua
 require "stable_sort"
---local dump=require "dump"
+--local dump=require "jit.dump"
+--require"DataDumper"
+--function dump(...) print(DataDumper(...), "\n---") end
 
 ccrypt={}
 ccrypt.Unicode="[%z\1-\127\194-\244][\128-\191]*"
@@ -97,6 +99,15 @@ function string.remove_doublets(text)
 		end
 	end
 	return table.concat(t)
+end
+
+function string.sort(text)
+	local set={}
+	for c in text:utf8all() do
+		set[#set+1]=c
+	end
+	table.sort(set)
+	return table.concat(set)
 end
 
 function string.filter(input, pat, rep)

@@ -1,1 +1,0 @@
-/usr/local/share/luajit-2.1/jit/dump.lua
