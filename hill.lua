@@ -1,17 +1,45 @@
 #!/usr/bin/env luajit
 --hill cipher
 require"ccrypt"
-local key,decrypt,english="GYBNQKURP",false,false
-for i=1,#arg do
-	if arg[i]=="-d" then
+local getopt = require"posix.unistd".getopt
+
+local key,decrypt,lang="GYBNQKURP",false,false
+local fopt={
+	["h"]=function(optarg,optind) 
+		io.stderr:write(
+			string.format(
+			"Hill cipher (CC)2025 H.Behrens DL7HH\n"
+			.."use: %s\n"
+			.."-h	print this help text\n"
+			.."-l	language (%s) translates numbers to language\n"
+			.."-k	key (%s) (%d)\n"
+			.."-d	decrypt\n\n",
+			arg[0], lang, key, #key,
+			decrypt)
+		)	
+		os.exit(EXIT_FAILURE)
+	end,
+	["l"]=function(optarg, optind)
+		lang=optarg:lower()
+	end,
+	["k"]=function(optarg, optind)
+		key=optarg:upper():remove_doublets()
+	end,
+	["d"]=function(optarg, optind)
 		decrypt=true
-	elseif arg[i]=="-e" then
-		english=true
-	else
-		key=arg[i]
-	end
+	end,
+	["?"]=function(optarg, optind)
+		io.stderr:write(string.format("unrecognized option %s\n", arg[optind -1]))
+		return true
+	end,
+}
+-- quickly process options
+for r, optarg, optind in getopt(arg, "k:l:dh") do
+	last_index = optind
+	if fopt[r](optarg, optind) then break end
 end
-local text=io.read("*a")
+
+
 function string:totable()
 	local tab={}
 	for i=1,#self do
@@ -119,8 +147,9 @@ function matrix.cofactor(m, mod)
 	return a
 end
 
-text=text:clean(english)
-key=key:clean(english)
+local text=io.read("*a")
+text=text:clean(lang)
+key=key:clean(lang)
 local tkey=key:totable()
 local mkey=matrix.new(3,3,tkey)
 --print(matrix.print(mkey))

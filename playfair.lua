@@ -1,5 +1,46 @@
 #!/usr/bin/env luajit
 require 'ccrypt'
+local getopt = require"posix.unistd".getopt
+
+local key,decrypt,lang="PLAYFAIR",false,false
+
+local fopt={
+	["h"]=function(optarg,optind) 
+		io.stderr:write(
+			string.format(
+			"Playfair cipher (CC)2025 H.Behrens DL7HH\n"
+			.."use: %s\n"
+			.."-h	print this help text\n"
+			.."-l	language (%s) translates numbers to language\n"
+			.."-k	key (%s) (%d)\n"
+			.."-d	decrypt\n\n",
+			arg[0], lang, key, #key,
+			decrypt)
+		)	
+		os.exit(EXIT_FAILURE)
+	end,
+	["l"]=function(optarg, optind)
+		lang=optarg:lower()
+	end,
+	["k"]=function(optarg, optind)
+		key=optarg:upper():remove_doublets()
+	end,
+	["d"]=function(optarg, optind)
+		decrypt=true
+	end,
+	["?"]=function(optarg, optind)
+		io.stderr:write(string.format("unrecognized option %s\n", arg[optind -1]))
+		return true
+	end,
+}
+-- quickly process options
+for r, optarg, optind in getopt(arg, "k:l:dh") do
+	last_index = optind
+	if fopt[r](optarg, optind) then break end
+end
+
+
+
 -- Objektorientierte Lösung
 local Playfair={}
 Playfair.__index = Playfair
@@ -40,15 +81,15 @@ function Playfair.xy(self, char)
 	return (pos-1)%5+1, floor((pos-1)/5)+1
 end
 
-function Playfair.new(password, english)
+function Playfair.new(password, lang)
 	local self=setmetatable({}, Playfair)
-	password=password:clean(english)
+	password=password:clean(lang)
 	self.pass=self:init(password)
 	return self
 end
 
-function Playfair.encode(self, text, decode, english)
-	text=text:clean(english)
+function Playfair.encode(self, text, decode, lang)
+	text=text:clean(lang)
 	-- auffüllen auf gerade mit zufälligem Zeichen
 	if #text%2 ~= 0 then
 		math.randomseed(os.time()*os.clock())
@@ -102,18 +143,8 @@ function Playfair.encode(self, text, decode, english)
 end
 
 -- Aufruf der Playfair Routinen
-local key,decrypt,english="PLAYFAIR",false,false
-for i=1,#arg do
-	if arg[i]=="-d" then
-		decrypt=true
-	elseif arg[i]=="-e" then
-		english=true
-	else
-		key=arg[i]
-	end
-end
 
 local text=io.read("*a")
 
-pf = Playfair.new(key, english)
-print(pf:encode(text, decrypt, english))
+pf = Playfair.new(key, lang)
+print(pf:encode(text, decrypt, lang))

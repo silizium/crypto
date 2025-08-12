@@ -3,7 +3,7 @@
 require "ccrypt"
 local getopt = require"posix.unistd".getopt
 
-local alphabet,filter,english,german,decrypt="abcdefghiklmnopqrstuvwxyz",true,false,false,false
+local alphabet,filter,lang,decrypt="abcdefghiklmnopqrstuvwxyz",true,false,false
 local fopt={
 	["h"]=function(optarg,optind) 
 		io.stderr:write(
@@ -12,23 +12,19 @@ local fopt={
 			.."use: %s\n"
 			.."-h	print this help text\n"
 			.."-f	filter (%s)	filter unknown characters\n"
-			.."-e	english (%s)	translates numbers to English\n"
-			.."-g	german (%s)	translates numbers to German\n"
+			.."-l	language (%s) translates numbers to english, german, french\n"
 			.."-a	alphabet (%s) (%d)\n"
 			.."-d	decrypt\n\n"
-			.."	Example:\n	echo \"Der Agent heißt Jörg, und er ist 23 Jahre alt.\"| \\\n	./reduce.lua -r25|./bifid.lua -aSMBKUTHDOYLQFNZWRPEXCGVAI -g \\\n	|block|./bifid.lua -a SMBKUTHDOYLQFNZWRPEXCGVAI -g  -d|block\nDERAG ENTHE ISZTI OERGY UNDER\nISTZW EIDRE IIAHR EALTX \n",
-			arg[0], filter, english, german, alphabet, #alphabet, decrypt)
+			.."	Example:\n	echo \"Der Agent heißt Jörg, und er ist 23 Jahre alt.\"| \\\n	./reduce.lua -r25|./bifid.lua -aSMBKUTHDOYLQFNZWRPEXCGVAI -l german \\\n	|block|./bifid.lua -a SMBKUTHDOYLQFNZWRPEXCGVAI -d|block\nDERAG ENTHE ISZTI OERGY UNDER\nISTZW EIDRE IIAHR EALTX \n",
+			arg[0], filter, lang, alphabet, #alphabet, decrypt)
 		)	
 		os.exit(EXIT_FAILURE)
 	end,
 	["f"]=function(optarg, optind)
 		filter=not filter
 	end,
-	["e"]=function(optarg, optind)
-		english=not english
-	end,
-	["g"]=function(optarg, optind)
-		german=not german
+	["l"]=function(optarg, optind)
+		lang=optarg:lower()
 	end,
 	["a"]=function(optarg, optind)
 		alphabet=optarg:upper():remove_doublets()
@@ -45,7 +41,7 @@ local fopt={
 	end,
 }
 -- quickly process options
-for r, optarg, optind in getopt(arg, "a:egfdh") do
+for r, optarg, optind in getopt(arg, "a:l:fdh") do
 	last_index = optind
 	if fopt[r](optarg, optind) then break end
 end
@@ -53,8 +49,7 @@ end
 local text=io.read("*a") -- STDIN einlesen
 -- wir wandeln erstmal unseren Text in Großbuchstaben
 text=text:umlauts():upper()
-if english then	text=text:clean("english") end
-if german then text=text:clean() end
+if lang then text=text:clean(lang) end
 alphabet=alphabet:upper()
 if filter then text=text:gsub("[^"..alphabet.."]", "") end
 --calculate the conversion table size

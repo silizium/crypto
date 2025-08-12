@@ -204,26 +204,36 @@ function string.reduce(text, chars, pattern)
 	return (string.gsub(text, pattern, rtab))
 end
 
-function string:clean(english)
+function string:clean(lang)
 	-- wir wandeln erstmal unseren Text in Großbuchstaben
 	self=self:upper()
 	-- auch die Sonderzeichen wandeln
-	local toupper_tab=("äöü"):subst_table("ÄÖÜ")
+	local toupper_tab=("äöüéèĉçñ"):subst_table("ÄÖÜÉÈĈÇÑ")
 	self=self:substitute(toupper_tab)
 	-- und jetzt wandeln wir die Sonderzeichen in ASCII
 	local enc_key
-	if english then
+	if lang=="english" then
 		enc_key={
 			["0"]="ZERO",["1"]="ONE",["2"]="TWO",["3"]="THREE",["4"]="FOUR",
 			["5"]="FIVE",["6"]="SIX",["7"]="SEVEN",["8"]="EIGHT",["9"]="NINE",
-			["ß"]="SZ",["Ä"]="AE",["Ö"]="OE",["Ü"]="UE",
+			["ß"]="SZ",["Ä"]="AE",["Ö"]="OE",["Ü"]="UE",["É"]="EE",
+			["È"]="E",["Ĉ"]="C", ["Ç"]="C", ["Ñ"]="N",
+			["."]="X", [","]="Y", ["!"]="X", ["?"]="X", [";"]="X", --[" "]="X",
+		}
+	elseif lang=="french" then
+		enc_key={
+			["0"]="ZERO",["1"]="UN",["2"]="DEUX",["3"]="TROIS",["4"]="QUATRE",
+			["5"]="CINQ",["6"]="SIX",["7"]="SEPT",["8"]="HUIT",["9"]="NEUF",
+			["ß"]="SZ",["Ä"]="AE",["Ö"]="OE",["Ü"]="UE",["É"]="EE",
+			["È"]="E",["Ĉ"]="C", ["Ç"]="C", ["Ñ"]="N",
 			["."]="X", [","]="Y", ["!"]="X", ["?"]="X", [";"]="X", --[" "]="X",
 		}
 	else
 		enc_key={
 			["0"]="NULL",["1"]="EINS",["2"]="ZWEI",["3"]="DREI",["4"]="VIER",
 			["5"]="FUENF",["6"]="SECHS",["7"]="SIEBEN",["8"]="ACHT",["9"]="NEUN",
-			["ß"]="SZ",["Ä"]="AE",["Ö"]="OE",["Ü"]="UE",
+			["ß"]="SZ",["Ä"]="AE",["Ö"]="OE",["Ü"]="UE",["É"]="EE",
+			["È"]="E",["Ĉ"]="C", ["Ç"]="C", ["Ñ"]="N",
 			["."]="X", [","]="Y", ["!"]="X", ["?"]="X", [";"]="X", --[" "]="X",
 		}
 	end

@@ -6,7 +6,7 @@ local getopt = require"posix.unistd".getopt
 
 local alpha="ABCDEFGHIKLMNOPQRSTUVWXYZ"
 local top,bottom=alpha,alpha
-local filter,english,german,decrypt=true,false,false,false
+local filter,lang,decrypt=true,false,false
 local fopt={
 	["h"]=function(optarg,optind) 
 		io.stderr:write(
@@ -15,13 +15,12 @@ local fopt={
 			.."use: %s\n"
 			.."-h	print this help text\n"
 			.."-f	filter (%s)	filter unknown characters\n"
-			.."-e	english (%s)	translates numbers to English\n"
-			.."-g	german (%s)	translates numbers to German\n"
+			.."-l	language (%s) translates numbers to language\n"
 			.."-a	alphabet (%s) (%d)\n"
 			.."-t	top-right square (%s) (%d)\n"
 			.."-b	bottom-left square (%s) (%d)\n"
 			.."-d	decrypt\n\n",
-			arg[0], filter, english, german, 
+			arg[0], filter, lang,
 			alpha, #alpha,  
 			top, #top,
 			bottom, #bottom,
@@ -32,11 +31,8 @@ local fopt={
 	["f"]=function(optarg, optind)
 		filter=not filter
 	end,
-	["e"]=function(optarg, optind)
-		english=not english
-	end,
-	["g"]=function(optarg, optind)
-		german=not german
+	["l"]=function(optarg, optind)
+		lang=optarg:lower()
 	end,
 	["a"]=function(optarg, optind)
 		alpha=optarg:upper():remove_doublets()
@@ -65,7 +61,7 @@ local fopt={
 	end,
 }
 -- quickly process options
-for r, optarg, optind in getopt(arg, "a:t:b:egfdh") do
+for r, optarg, optind in getopt(arg, "a:t:b:l:fdh") do
 	last_index = optind
 	if fopt[r](optarg, optind) then break end
 end
@@ -77,8 +73,7 @@ math.randomseed(os.time()^5*os.clock())
 local text=io.read("*a") -- STDIN einlesen
 -- wir wandeln erstmal unseren Text in Großbuchstaben
 text=text:umlauts():upper()
-if english then	text=text:clean("english") end
-if german then text=text:clean() end
+if lang then text=text:clean(lang) end
 alpha=alpha:upper()
 if filter then text=text:gsub("[^"..alpha.."]", "") end
 --calculate the conversion table size
