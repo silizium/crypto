@@ -190,17 +190,25 @@ end
 function string.reduce(text, chars, pattern)
 	pattern = pattern or Unicode
 	local rtab={}
-	if chars<=26 then 
+	local num,extra=chars:upper():match("(%d+)(%a*)")
+	num=tonumber(num)
+	if tonumber(chars:match("(%d+)"))<=26 then 
 		local enc_key={}
 		enc_key.ß="SZ" enc_key.Ä="AE" enc_key.Ö="OE" enc_key.Ü="UE" enc_key.Å="AO"
 		text=text:substitute(enc_key)
 	end
-	if chars<=25 then rtab["J"]="I" end
-	if chars<=24 then rtab["U"]="V" end
-	if chars<=23 then rtab["W"]="VV" end
-	if chars<=22 then rtab["X"]="CS" end
-	if chars<=21 then rtab["Y"]="I" end
-	if chars<=20 then rtab["K"]="C" end
+	if num<=25 then 
+		if extra=="Q" then
+			rtab["Q"]=""
+		else
+			rtab["J"]="I" 
+		end
+	end
+	if num<=24 then rtab["U"]="V" end
+	if num<=23 then rtab["W"]="VV" end
+	if num<=22 then rtab["X"]="CS" end
+	if num<=21 then rtab["Y"]="I" end
+	if num<=20 then rtab["K"]="C" end
 	return (string.gsub(text, pattern, rtab))
 end
 

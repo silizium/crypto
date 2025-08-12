@@ -67,7 +67,7 @@ for r, optarg, optind in getopt(arg, "a:t:b:l:fdh") do
 end
 
 if alpha:sort() ~= top:sort() or alpha:sort() ~= bottom:sort() then
-	error("*** FAILURE: alphabet top and bottom square do not have the same character sets")
+	error("*** FAILURE: alphabet top and bottom square do not have the same character sets\n\ta: "..alpha:sort().."\n\tt: "..top:sort().."\n\tb: "..bottom:sort())
 end
 math.randomseed(os.time()^5*os.clock())
 local text=io.read("*a") -- STDIN einlesen

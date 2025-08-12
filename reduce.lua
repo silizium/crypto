@@ -12,8 +12,9 @@ local fopt={
 			.."-h	print this help text\n"
 			.."-r	reduce (%d)\n\n"
 			.."26: reduce Umlauts, down the ladder of historical alphabets\n"
-			.."25: J to I\n"
 			.."24: U to V\n"
+			.."25: J to I\n"
+			.."25Q: no Q\n"
 			.."23: W to VV\n"
 			.."22: X to CS\n"
 			.."21: Y to I\n"
@@ -23,7 +24,7 @@ local fopt={
 		os.exit(EXIT_FAILURE)
 	end,
 	["r"]=function(optarg, optind)
-		nr=tonumber(optarg)
+		nr=optarg
 	end,
 	["?"]=function(optarg, optind)
 		print('unrecognized option', arg[optind -1])
@@ -35,9 +36,6 @@ for r, optarg, optind in getopt(arg, "dr:h") do
 	last_index = optind
 	if fopt[r](optarg, optind) then break end
 end
-
-
-
 
 local text=io.read("*a"):upper()
 text=text:substitute(("äöü"):subst_table("ÄÖÜ")):reduce(nr)

@@ -2,8 +2,13 @@
 require "ccrypt"
 local getopt = require"posix.unistd".getopt
 
-
-local alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+local alpha={
+	["25"]=		"ABCDEFGHIKLMNOPQRSTUVWXYZ",
+	["25Q"]=	"ABCDEFGHIJKLMNOPRSTUVWXYZ",
+	["26"]=		"ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+	["36"]=		"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+}
+local alphabet=alpha["36"]
 local password, randomize="", ""
 local column
 local fopt={
@@ -13,7 +18,7 @@ local fopt={
 			"Alphabet generator (CC)2023 H.Behrens DL7HH\n"
 			.."use: %s\n"
 			.."-h	print this help text\n"
-			.."-a	alphabet (%s) %d\n"
+			.."-a	alphabet (%s) %d or 25, 25q, 26, 36\n"
 			.."-l	letters\n"
 			.."-n	numbers\n"
 			.."-w	write out alphabet to /dev/stderr\n"
@@ -27,6 +32,7 @@ local fopt={
 	end,
 	["a"]=function(optarg, optind)
 		alphabet=optarg:upper():umlauts():remove_doublets()
+		alphabet=alpha[alphabet] and alpha[alphabet] or alphabet
 	end,
 	["l"]=function(optarg, optind)
 		alphabet=alphabet:gsub("%A", "")
