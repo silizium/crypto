@@ -78,6 +78,7 @@ end
 function Playfair.xy(self, char)
 	local pos=self.rtable[char]
 	-- return x,y
+	if not pos then error("*** FAILURE: unknown character: "..char) end
 	return (pos-1)%5+1, floor((pos-1)/5)+1
 end
 
@@ -127,24 +128,13 @@ function Playfair.encode(self, text, decode, lang)
 		cipher[#cipher+1]=c1
 		cipher[#cipher+1]=c2
 	end
-	--[[
-	for y=1,5 do
-		for x=1,5 do
-			io.write(self:char(x,y))
-		end
-		print()
-	end
-	print(text)
-	--[[
-	for c in self.pass:utf8all() do
-		print(self:xy(c))
-	end ]]
 	return table.concat(cipher)
 end
 
 -- Aufruf der Playfair Routinen
 
-local text=io.read("*a")
+local text=io.read("*a"):upper():clean():filter()
+if #text%2 == 1 then local p=math.random(26) text=text..("ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(p,p) end
 
 pf = Playfair.new(key, lang)
 print(pf:encode(text, decrypt, lang))
