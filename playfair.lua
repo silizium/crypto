@@ -134,7 +134,6 @@ end
 -- Aufruf der Playfair Routinen
 
 local text=io.read("*a"):upper():clean():filter()
-if #text%2 == 1 then local p=math.random(26) text=text..("ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(p,p) end
 
 pf = Playfair.new(key, lang)
 print(pf:encode(text, decrypt, lang))
