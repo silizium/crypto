@@ -2,7 +2,7 @@
 -- pipe_caesar.lua
 require "ccrypt"
 local getopt = require"posix.unistd".getopt
-require"DataDumper" local dump=function(...) print(DataDumper(...),"\n---") end
+--require"DataDumper" local dump=function(...) print(DataDumper(...),"\n---") end
 
 local alpha="ABCDEFGHIKLMNOPQRSTUVWXYZ"
 local top,bottom=alpha,alpha
