@@ -12,6 +12,7 @@ local fopt={
 		io.stderr:write(
 			string.format(
 			"Trifid cipher (CC)2025 H.Behrens DL7HH\n"
+			.."\ta French cipher from Félix Delastelle from 1902\n"
 			.."use: %s\n"
 			.."-h	print this help text\n"
 			.."-l	language (%s) translates numbers to english, german, french\n"
