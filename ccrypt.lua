@@ -92,7 +92,7 @@ end
 
 function string.remove_doublets(text)
 	local t,set={},{}
-	for c in text:gmatch("%w") do
+	for c in text:gmatch("%g") do
 		if not set[c] then
 			t[#t+1]=c
 			set[c]=true
@@ -227,6 +227,7 @@ function string:clean(lang)
 			["ß"]="SZ",["Ä"]="AE",["Ö"]="OE",["Ü"]="UE",["É"]="EE",
 			["È"]="E",["Ĉ"]="C", ["Ç"]="C", ["Ñ"]="N",
 			["."]="X", [","]="Y", ["!"]="X", ["?"]="X", [";"]="X", --[" "]="X",
+			["\""]="YY",
 		}
 	elseif lang=="french" then
 		enc_key={
@@ -235,6 +236,7 @@ function string:clean(lang)
 			["ß"]="SZ",["Ä"]="AE",["Ö"]="OE",["Ü"]="UE",["É"]="EE",
 			["È"]="E",["Ĉ"]="C", ["Ç"]="C", ["Ñ"]="N",
 			["."]="X", [","]="Y", ["!"]="X", ["?"]="X", [";"]="X", --[" "]="X",
+			["\""]="YY",
 		}
 	else
 		enc_key={
@@ -243,6 +245,7 @@ function string:clean(lang)
 			["ß"]="SZ",["Ä"]="AE",["Ö"]="OE",["Ü"]="UE",["É"]="EE",
 			["È"]="E",["Ĉ"]="C", ["Ç"]="C", ["Ñ"]="N",
 			["."]="X", [","]="Y", ["!"]="X", ["?"]="X", [";"]="X", --[" "]="X",
+			["\""]="YY",
 		}
 	end
 	self=self:substitute(enc_key)
