@@ -199,7 +199,7 @@ function string.reduce(text, chars, pattern)
 	end
 	if num<=25 then 
 		if extra=="Q" then
-			rtab["Q"]=""
+			rtab["Q"]="C"
 		else
 			rtab["J"]="I" 
 		end
