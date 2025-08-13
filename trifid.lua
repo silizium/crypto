@@ -5,7 +5,7 @@ local getopt = require"posix.unistd".getopt
 require"DataDumper" dump=function(...) print(DataDumper(...).."\n---") end
 local function printf(fmt, ...) io.stderr:write(string.format(fmt,...)) end
 
-local alphabet,block,filter,lang,decr="ABCDEFGHIJKLMNOPQRSTUVWXYZ+",5,true,false,false
+local alphabet,block,lang,decr="ABCDEFGHIJKLMNOPQRSTUVWXYZ+",5,false,false
 local key=alphabet
 local fopt={
 	["h"]=function(optarg,optind) 
@@ -14,18 +14,14 @@ local fopt={
 			"Trifid cipher (CC)2025 H.Behrens DL7HH\n"
 			.."use: %s\n"
 			.."-h	print this help text\n"
-			.."-f	filter (%s)	filter unknown characters\n"
 			.."-l	language (%s) translates numbers to english, german, french\n"
 			.."-a	alphabet (%s) (%d)\n"
 			.."-b	blocksize (%d)\n"
 			.."-d	decrypt\n\n"
 			.."	Example:\n	echo \"aide-toi, le ciel t'aidera\"| \\\n\t./trifid.lua -a felixmariedelastelle |(tee|block 4) >/dev/stderr |\\\n\t./trifid.lua -a felixmariedelastelle -d|block 4\b",
-			arg[0], filter, lang, key, #alphabet, block, decrypt)
+			arg[0], lang, key, #alphabet, block, decrypt)
 		)	
 		os.exit(EXIT_FAILURE)
-	end,
-	["f"]=function(optarg, optind)
-		filter=not filter
 	end,
 	["l"]=function(optarg, optind)
 		lang=optarg:lower()
@@ -51,7 +47,7 @@ local fopt={
 	end,
 }
 -- quickly process options
-for r, optarg, optind in getopt(arg, "a:l:b:fdh") do
+for r, optarg, optind in getopt(arg, "a:l:b:dh") do
 	last_index = optind
 	if fopt[r](optarg, optind) then break end
 end
@@ -61,7 +57,7 @@ local text=io.read("*a") -- STDIN einlesen
 text=text:umlauts():upper()
 if lang then text=text:clean(lang) end
 key=key:upper()
-if filter then text=text:gsub("[^"..key.."]", "") end
+text=text:gsub("[^"..key.."]", "") -- filter all non valid chars out 
 --calculate the conversion table size
 local cipher
 -- convert text to number pairs
@@ -130,5 +126,4 @@ else
 	cipher=decrypt(cipher,block)
 end
 text=decode(cipher,dec)
---if decrypt then cipher=unshuffle(cipher) end
 io.write(text) -- verschlüsselter Text
