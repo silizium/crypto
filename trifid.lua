@@ -19,7 +19,7 @@ local fopt={
 			.."-a	alphabet (%s) (%d)\n"
 			.."-b	blocksize (%d)\n"
 			.."-d	decrypt\n\n"
-			.."	Example:\n	echo \"aide-toi, le ciel t'aidera\"| \\\n\t./trifid.lua -a felixmariedelastelle |(tee|block 4) >/dev/stderr |\\\n\t./trifid.lua -a felixmariedelastelle -d|block 4\b",
+			.."	Example:\n	echo \"aide-toi, le ciel t'aidera\"| \\\n\t./trifid.lua -a felixmariedelastelle |(tee|block) >/dev/stderr |\\\n\t./trifid.lua -a felixmariedelastelle -d|block\n",
 			arg[0], lang, key, #alphabet, block, decrypt)
 		)	
 		os.exit(EXIT_FAILURE)
