@@ -77,7 +77,7 @@ local function tables(key)
 	return enc, dec
 end
 local function encode(text,enc)
-	local cipher=text:gsub("%w",enc)
+	local cipher=text:gsub("["..key.."]",enc)
 	return cipher
 end
 local function decode(cipher,dec)
@@ -120,7 +120,7 @@ local function decrypt(cipher,block)
 end
 
 local enc,dec=tables(key)
-local cipher=encode(text,enc)
+local cipher=encode(text,enc,key)
 if not decr then
 	cipher=encrypt(cipher,block)
 else
