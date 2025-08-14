@@ -87,14 +87,17 @@ end
 local function encrypt(cipher,block)
 	local res={}
 	for i=1,#cipher,block*3 do
-		local l1,l2,l3={},{},{}
+		local l={}
+		for i=1,3 do l[i]={} end
 		local part=cipher:sub(i,i+block*3-1)
-		for c1,c2,c3 in part:gmatch("(%d)(%d)(%d)") do
-			l1[#l1+1]=c1
-			l2[#l2+1]=c2
-			l3[#l3+1]=c3
+		local i=0
+		for c in part:gmatch("(%d)") do
+			l[i+1][#l[i+1]+1]=c
+			i=(i+1)%3
 		end
-		res[#res+1]=table.concat(l1)..table.concat(l2)..table.concat(l3)
+		for i=1,3 do
+			res[#res+1]=table.concat(l[i])
+		end
 	end
 	return table.concat(res)
 end
