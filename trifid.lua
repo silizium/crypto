@@ -87,8 +87,7 @@ end
 local function encrypt(cipher,block)
 	local res={}
 	for i=1,#cipher,block*3 do
-		local l={}
-		for i=1,3 do l[i]={} end
+		local l={} for i=1,3 do l[i]={} end
 		local part=cipher:sub(i,i+block*3-1)
 		local i=0
 		for c in part:gmatch("(%d)") do
@@ -106,8 +105,7 @@ local function decrypt(cipher,block)
 	-- enc:111 123 231 111 322.311121211211321.111212111312321.111112313313221
 	local res={}
 	for i=1,#cipher,block*3 do
-		local l={}
-		for i=1,block do l[i]={} end
+		local l={} for i=1,block do l[i]={} end
 		local part=cipher:sub(i,i+block*3-1)
 		local i=0
 		for c in part:gmatch("(%d)") do
