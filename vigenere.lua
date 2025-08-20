@@ -11,16 +11,18 @@ function vigenere_make(password, alphabet)
 	return t
 end
 
-function string.vigenere_encrypt(text,password,alphabet)
+function string.vigenere_encrypt(text,password,alphabet,inc)
 	local v,t={}
 	t=vigenere_make(password,alphabet)
 	-- encode vigenere
-	local r=0
+	local r,i=0,0
 	for c in text:gmatch(".") do
 		local from,to=alphabet:find(c)
 		if from then 
+			from=(from+i-1)%#alphabet+1
 			v[#v+1]=t[r+1]:sub(from,from) 
 			r=(r+1)%#password
+			i=i+inc
 		else 
 			v[#v+1]=c
 		end
@@ -28,16 +30,18 @@ function string.vigenere_encrypt(text,password,alphabet)
 	return table.concat(v)
 end
 
-function string.vigenere_decrypt(text,password,alphabet)
+function string.vigenere_decrypt(text,password,alphabet,inc)
 	local v,t={}
 	t=vigenere_make(password,alphabet)
 	-- decode vigenere
-	local r=0
+	local r,i=0,0
 	for c in text:gmatch(".") do
 		local from,to=t[r+1]:find(c)
 		if from then
+			from=(from+i-1)%#alphabet+1
 			v[#v+1]=alphabet:sub(from,from)
 			r=(r+1)%#password
+			i=i-inc
 		else
 			v[#v+1]=c
 		end
@@ -46,7 +50,7 @@ function string.vigenere_decrypt(text,password,alphabet)
 end
 
 local alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-local password,decrypt,randomize,clean="SECRET",false,false,true
+local password,decrypt,randomize,clean,inc="SECRET",false,false,true,0
 local fopt={
 	["h"]=function(optarg,optind) 
 		io.stderr:write(
@@ -58,6 +62,7 @@ local fopt={
 			.."-p	password (%s) \n\taccepts all that are in alphabet\n"
 			.."-r	randomize (%s) \n\taccepts \"time\" or seed number\n"
 			.."-c	not clean text from non alphabet characters\n"
+			.."-i	increment after each step\n"
 			.."-d	decrypt (%s)\n",
 			arg[0], alphabet, password, randomize, decrypt)
 		)	
@@ -88,13 +93,16 @@ local fopt={
 	["c"]=function(optarg, optind)
 		clean=not clean
 	end,
+	["i"]=function(optarg, optind)
+		inc=tonumber(optarg)
+	end,
 	["?"]=function(optarg, optind)
 		io.stderr:write(string.format("unrecognized option %s\n", arg[optind -1]))
 		return true
 	end,
 }
 -- quickly process options
-for r, optarg, optind in getopt(arg, "a:p:r:cdh") do
+for r, optarg, optind in getopt(arg, "a:p:r:i:cdh") do
 	last_index = optind
 	if fopt[r](optarg, optind) then break end
 end
@@ -104,9 +112,9 @@ if clean then
 	text=text:gsub("[^"..alphabet.."]","") -- filter valid characters
 end
 if not decrypt then
-	text=text:vigenere_encrypt(password,alphabet)
+	text=text:vigenere_encrypt(password,alphabet,inc)
 else
-	text=text:vigenere_decrypt(password,alphabet)
+	text=text:vigenere_decrypt(password,alphabet,inc)
 end
 io.write(text)
 
