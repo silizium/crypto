@@ -106,8 +106,8 @@ local fopt={
 		clean=not clean
 	end,
 	["i"]=function(optarg, optind)
-		for arg in optarg:gmatch("([%dso]+)") do
-			local increment,step,offset=arg:match("(%d+)s*(%d*)o*(%d*)")
+		for arg in optarg:gmatch("([%-%dso]+)") do
+			local increment,step,offset=arg:match("(%-?%d+)s*(%d*)o*(%d*)")
 			inc[#inc+1]={
 				increment=tonumber(increment),
 				step=step and tonumber(step) or 1,
