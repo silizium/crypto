@@ -24,7 +24,7 @@ function string.vigenere_encrypt(text,password,alphabet,inc)
 			v[#v+1]=t[r+1]:sub(from,from) 
 			r=(r+1)%#password
 			for _,move in ipairs(inc) do
-				if nr>move.offset and (nr-move.offset)%move.step==0 then
+				if (nr-move.offset)%move.step==0 then
 					i=i+move.increment
 				end
 			end
@@ -48,7 +48,7 @@ function string.vigenere_decrypt(text,password,alphabet,inc)
 			v[#v+1]=alphabet:sub(from,from)
 			r=(r+1)%#password
 			for _,move in ipairs(inc) do
-				if nr>move.offset and (nr-move.offset)%move.step==0 then
+				if (nr-move.offset)%move.step==0 then
 					i=i-move.increment
 				end
 			end
@@ -107,7 +107,7 @@ local fopt={
 	end,
 	["i"]=function(optarg, optind)
 		for arg in optarg:gmatch("([%-%dso]+)") do
-			local increment,step,offset=arg:match("(%-?%d+)s*(%d*)o*(%d*)")
+			local increment,step,offset=arg:match("(%-?%d+)s*(%d*)o*(%-?%d*)")
 			inc[#inc+1]={
 				increment=tonumber(increment),
 				step=step and tonumber(step) or 1,
