@@ -1,0 +1,33 @@
+Datum	Walzenlage	| Ringstellung Steckerverbindungen			Grund	Kenngruppe
+---------------------------------------------------------------------------------------
+31 |	V   III I	| 25 15 06	| AS BF CZ DO EV GT HQ KN MU XY	| ??? |	BNV ZNK KR?
+30 |	II  V   IV	| 08 23 13	| CP DM EG HY IL KX NO QS RV UW	| ??? |	IKA UYL SO?
+29 |	III II  I	| 13 21 16	| AQ BX CW EF GV HI KR MY OS PZ	| ??? |	HRY LOG KS?
+28 |	I   V   III	| 15 07 22	| BR CP DF ET GY HK IQ NS OZ UX	| ??? |	TQX VTB KD?
+27 |	II	I	IV	| 04 08 10	| BR CS DJ ET FO GH LZ MP NV QW	| ??? |	THH AJP E??
+26 |	II	I	IV	| 06 14 18	| AD BE CN GX IR KU MZ PS TY ??	| ??? |	YMR UZR O??
+25 |	IV	V	II	| 12 13 06	| AQ CL DE FZ HI JU KO PT RV WY	| ??? |	IIX LGC M??
+24 |	II	I	III	| 20 10 03	| AD CW EJ FT GR IY KZ LN OP UX	| ??? |	WNB QEZ V??
+23 |	V	I	II	| 14 06 16	| AT BX CP EM HU IY KW LS NO RV	| ??? |	QGL SNV FA?
+22 |	III	II	V	| 06 21 01	| BD CU EZ FY GQ JL MO NS PR TW	| ??? |	KYP MDL KO?
+21 |	II	I 	IV	| 14 25 05	| AB DI ES FV GP JN KX LY OT QZ	| ??? |	RBX DYM GGF
+20 |	III	V	IV	| 06 06 16	| AT BV EG FL HS IQ JN KM RZ UX	| ??? |	CTW KQE SVQ
+19 |	I	III	II	| 12 22 13	| AY CV DK ET FR JX MP NS OW UZ	| ??? |	QXC RUQ SVV
+18 |	II	IV	I	| 05 26 21	| BJ DE FZ GL IN KP MS OR QU TY	| ??? |	XUD MXJ FGW W??
+17 |	III	IV	V	| 18 12 14	| AX BS CK DY EW HM IT JU LV OQ	| ??? |	WFY CVG LEY W??
+16 |	I	II	IV	| 20 20 24	| AP BN CR DO FW HM IQ KY SU TZ	| ??? |	ZXR MOC PHR J??
+15 |	II	V	I	| 03 20 22	| AK ?? DZ EW FN HM J? ?? PX VY	| ??? |	MOY VBU WLG D??
+14 |	III	V	II	| 13 21 12	| BR DH FS GU IW KV ?? ?? ?Q TX	| ??? |	WVL LGD NLY HP?
+13 |	IV	III	II	| 26 11 02	| AV CD EI FM GS JN ?? ?? UW XY	| ??? |	HJV UVW KHR G??
+12 |	III	I	II	| 19 10 14	| AD BX CW FO GN H? ?? ?? LR PU	| ??? |	BEE QPQ UVM ABQ
+11 |	III	?	I	| 17 08 08	| AG BR CD EP HT ?? ?? ?? UW XY	| ??? |	URT RES EEV QAZ
+10 |	III	?	?	| 20 11 24	| AO CX DS EH FP ?? ?? JV QW TZ	| ??? |	DFN LYO ISJ UM?
+09 |	IV	?	?	| 22 02 02	| AD BJ CT EN FQ GV HK MP SY UW	| ??? |	COQ CAC LZF QVV
+08 |	IV	?	?	| 07 08 02	| BU CD GV HW JO KM LX NQ RY TZ	| ??? |	HFJ KKD BKO IMC
+07 |	IV	II	I	| 21 15 09	| AQ CG DO EU FK HI JL MP NS XZ	| ??? |	XDB TVS DQG PZP
+06 |	V	I	II	| 01 15 17	| AJ BL CX DU EK FM IN OY RT VW	| ??? |	GXQ ERB GKT YN?
+05 |	III	I	II	| 03 13 13	| AM BW EN HX IP JV KY OU QZ RS	| ??? |	QGR JFV AGY ???
+04 |	III	V	I	| 13 23 11	| AM CR DY EI FL HW JZ KX NS OU	| ??? |	SAA I??
+03 |	II	IV	V	| 04 24 20	| AU BT DP EY FV HZ IL JX KR MQ	| ??? |	R?S
+02 |	IV	II	III	| 11 22 18	| AO CM DV EK FH GW JU NZ PT QS	| ??? |	???
+01 |	I	II	IV	| 19 17 22	| AM BJ CT DG EX HZ IN KL PS WY	| ??? |	???
