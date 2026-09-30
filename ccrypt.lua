@@ -16,7 +16,7 @@ function string.utf8len(str)
 	return select(2, str:gsub(Unicode, ""))
 end
 
-function dec2bin(num, bits, symb)
+function dec2bin(num, bits, symb, reverse)
 	local Unicode="([%z\1-\127\194-\244][\128-\191]*)"
 	bits=bits or 8
 	symb=symb or "○●"
@@ -28,11 +28,11 @@ function dec2bin(num, bits, symb)
 		else
 			res[#res+1]=symb:match(Unicode, 1)
 		end
-		test=rshift(test,1)
+		test=rshift(test,1) 
 	end
 	return table.concat(res)
 end
-function bin2dec(txt, bits, symb)
+function bin2dec(txt, bits, symb, reverse)
 	bits=bits or 8
 	symb=symb or "○●"
 	local res=0
@@ -190,6 +190,7 @@ end
 function string.reduce(text, chars, pattern)
 	pattern = pattern or Unicode
 	local rtab={}
+	chars=tostring(chars)
 	local num,extra=chars:upper():match("(%d+)(%a*)")
 	num=tonumber(num)
 	if tonumber(chars:match("(%d+)"))<=26 then 

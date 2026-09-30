@@ -19,6 +19,7 @@ local fopt={
 			.."-s	seed (%d)\n",
 			arg[0],words,pattern,file,seed)
 		)
+		os.exit(EXIT_FAILURE)
 	end,
 	["n"]=function(optarg, optind)
 		words=tonumber(optarg)

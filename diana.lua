@@ -16,10 +16,11 @@ function loadotp(file,start)
 end
 
 function string.diana(text, password)
-	v={text:byte(1,#text)}
-	p={password:byte(1,#text)}
-	t={}
-	a=string.byte("A")
+	local a=string.byte("A")
+	local v={text:byte(1,#text)} for i,_val in ipairs(v) do v[i]=v[i]-a end
+	local p={password:byte(1,#text)} for i,_val in ipairs(p) do p[i]=p[i]-a end
+
+	local t={}
 	for i=1,#v do 
 		t[i]=string.char(25-(v[i]+p[1+(i-1)%#password])%26+a)
 	end
@@ -35,17 +36,18 @@ local fopt={
 			"Diana cipher/OTP from Vietnam War era (CC)2023 H.Behrens DL7HH\n"
 			.."use: %s\n"
 			.."-h	print this help text\n"
-			.."-f	filename (%s)\n"
-			.."-s	start (%s)\n",
+			.."-o	one-time-pad (%s)\n"
+			.."-s	start (%s) starts in OTP from that group, prints out that group, \n"
+			.."\tif there is 5 in it, it will take the first 5 characters as start\n",
 			arg[0], filename, start)
 		)	
 		os.exit(EXIT_FAILURE)
 	end,
 	["s"]=function(optarg, optind)
 		start=optarg:upper():umlauts()
-		start=start:gsub("[%A]","") -- filter valid characters
+		if tonumber(start)~=nil then start=start:gsub("[%A]","") end -- filter valid characters
 	end,
-	["f"]=function(optarg, optind)
+	["o"]=function(optarg, optind)
 		file=optarg
 	end,
 	["?"]=function(optarg, optind)
@@ -54,18 +56,18 @@ local fopt={
 	end,
 }
 -- quickly process options
-for r, optarg, optind in getopt(arg, "f:s:h") do
+for r, optarg, optind in getopt(arg, "o:s:h") do
 	last_index = optind
 	if fopt[r](optarg, optind) then break end
 end
 
-if start then io.write(start) 
+if start and tonumber(start)==nil then io.write(start) 
 else
-	start=io.read(5)
+	if start then start=io.read(tonumber(start)) end
 end
 local otp=loadotp(file, start)
 
-password=otp:gsub("[%A]","") -- filter valid characters
+local password=otp:gsub("[%A]","") -- filter valid characters
 local text=io.read("*a"):upper():umlauts()
 text=text:gsub("[%A]","") -- filter valid characters
 text=text:diana(password)
